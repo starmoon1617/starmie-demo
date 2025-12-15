@@ -1,0 +1,21 @@
+<template>
+    <v-main style="width: 100%;">
+        <div th:replace="~{user/searchForm :: searchForm}"></div>
+        <div th:replace="~{common/toolbar :: commonToolbar}"></div>
+        <v-container fluid>
+            <v-data-table :headers="tableDatas.headers" :items="tableDatas.dataItems" :server-items-length="tableDatas.total" class="elevation-1"
+                :footer-props="footOptions" :options.sync="pagination">
+                <template v-slot:top>
+                    <v-toolbar flat color="white" height="1px">
+                        <div th:replace="~{user/editForm :: editForm}"></div>
+                        <div th:replace="~{common/dialogs :: dialogDelete}"></div>
+                        <div th:replace="~{common/dialogs :: dialogConfirm}"></div>
+                        <div th:replace="~{common/dialogs :: dialogImport}"></div>
+                    </v-toolbar>
+                </template>
+                <div th:replace="~{common/toolbar :: actionBar}"></div>
+            </v-data-table>
+        </v-container>
+    </v-main>
+</template>
+<th:block th:replace="~{user/script :: script}" ></th:block>

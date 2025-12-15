@@ -1,0 +1,227 @@
+<template>
+    <v-main style="width: 100%;">
+        <v-container fluid class="pb-0">
+            <v-expand-transition>
+                <v-row dense v-show="searchAble">
+                    <v-col cols="2" sm="2" md="2"> <v-text-field v-model="searchForm.searchItem._FC1_S0_email" label="邮箱" outlined dense> </v-text-field> </v-col>
+                    <v-col cols="2" sm="2" md="2"> <v-text-field v-model="searchForm.searchItem._FC1_S0_loginName" label="登录名称" outlined dense> </v-text-field></v-col>
+                    <v-col cols="2" sm="2" md="2"> <v-text-field v-model="searchForm.searchItem._FC1_S0_name" label="名称" outlined dense> </v-text-field></v-col>
+                    <v-col cols="6" sm="6" md="6"><v-spacer></v-spacer> </v-col>
+                </v-row>
+            </v-expand-transition>
+        </v-container>
+        <v-container fluid class="pa-0">
+            <v-row dense>
+                <v-col cols="5" sm="5" md="5">
+                    <v-hover v-slot="{ hover }">
+                        <div style="display:inline-block;">
+                            <v-btn dense outlined color="primary" dark class="mr-3" @click="searchAble = !searchAble" >查找</v-btn>
+                            <v-fade-transition>
+                                <v-list v-if="hover" style="position: absolute;z-index:5;">
+                                    <v-list-item-group active-class="border" color="indigo">
+                                        <v-list-item v-for="(c, i) in searchForm.conds" :key="i">
+                                            <v-list-item-content>
+                                                <div class="text-center d-flex align-center justify-space-around">
+                                                    <v-tooltip top>
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <v-btn dense outlined color="primary" v-bind="attrs" v-on="on" dark class="mr-3" style="display:inline-block;">{{ c.name }}</v-btn>
+                                                        </template>
+                                                        <span>{{ c.remark }}</span>
+                                                    </v-tooltip>
+                                                    <v-icon class="mr-2" @click="deleleCond(c, i)" >mdi-delete</v-icon>
+                                                </div>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list> 
+                            </v-fade-transition>
+                        </div>
+                    </v-hover>
+                    <v-btn dense outlined color="primary" dark class="mr-3" @click="clear">清除</v-btn>
+                    <v-btn th:if="${privilege.createFlag == 1}" dense outlined color="primary" dark class="mr-3" @click="create">新增</v-btn>
+                    <v-btn th:if="${privilege.exportFlag == 1}" dense outlined color="primary" dark class="mr-3" @click="exportDatas">导出</v-btn>
+                    <a href="#" hidden="true" style="display:none" id="downLoadFileHref" ref="downLoadFileHref"></a>
+                    <v-btn th:if="${privilege.importFlag == 1}" dense outlined color="primary" dark class="mr-3" @click="importData">导入</v-btn>
+                </v-col>
+                <v-col cols="7" sm="7" md="7"><v-spacer></v-spacer> </v-col>
+            </v-row>
+        </v-container>
+        <v-container fluid>
+            <v-data-table :headers="tableDatas.headers" :items="tableDatas.dataItems" :server-items-length="tableDatas.total" class="elevation-1"
+                :footer-props="footOptions" :options.sync="pagination">
+                <template v-slot:top>
+                    <v-toolbar flat color="white" height="1px">
+                        <v-dialog v-model="dialog" max-width="500px">
+                            <v-card>
+                                <v-card-title>
+                                    <span class="headline">{{ formTitle }}</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-container>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.email" label="邮箱" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.email" label="邮箱" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.loginName" label="登录名称" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.loginName" label="登录名称" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.name" label="名称" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.name" label="名称" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.age" label="年龄" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.age" label="年龄" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.status" label="状态" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.status" label="状态" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.remark" label="备注" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.remark" label="备注" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.createTime" label="创建时间" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.createTime" label="创建时间" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.createBy" label="创建用户" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.createBy" label="创建用户" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.updateTime" label="更新时间" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.updateTime" label="更新时间" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="1" sm="12" md="12">
+                                            <template v-if="editAble">
+                                                <v-text-field v-model="editedItem.updateBy" label="更新用户" outlined></v-text-field>
+                                            </template>
+                                            <template v-else>
+                                                <v-text-field v-model="editedItem.updateBy" label="更新用户" outlined readOnly="true"></v-text-field>
+                                            </template>
+                                            </v-col>
+                                    </v-row>
+                                    
+                                    </v-container>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <template v-if="editAble">
+                                        <v-btn color="blue darken-1" text @click="close">取消</v-btn>
+                                        <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+                                    </template>
+                                    <template v-else>
+                                        <v-btn color="blue darken-1" text @click="close">确定</v-btn>
+                                    </template>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="deleteDialog" max-width="500px">
+                            <v-card>
+                                <v-card-title>
+                                    <span class="headline">{{ deleteFormTitle }}</span>
+                                </v-card-title>
+                                <v-card-text> {{deleteMsg}} </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="cancelDelete">取消</v-btn>
+                                    <v-btn color="blue darken-1" text @click="confirmDelete">删除</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="confirmDialog" max-width="500px">
+                            <v-card>
+                                <v-card-title>
+                                    <span class="headline">{{ confirmFormTitle }}</span>
+                                </v-card-title>
+                                <v-card-text> {{confirmMsg}} </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="colseConfirm">确定</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="importDialog" max-width="500px">
+                            <v-card>
+                                <v-card-title>
+                                    <span class="headline">导入</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-file-input id="importFile" placeholder="请选择要上传的文件" outlined v-model="importFile"></v-file-input>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="importDatas">导入</v-btn>
+                                    <v-btn color="blue darken-1" text @click="closeImport">取消</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-toolbar>
+                </template>
+                <template v-slot:item.actions="{ item }">
+                    <v-icon class="mr-2" @click="viewItem(item)">mdi-text-box-outline</v-icon>
+                    <v-icon th:if="${privilege.updateFlag == 1}" class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+                    <v-icon th:if="${privilege.deleteFlag == 1}" class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+                </template>
+            </v-data-table>
+        </v-container>
+    </v-main>
+</template>
+<th:block th:replace="~{user/script :: script}" ></th:block>

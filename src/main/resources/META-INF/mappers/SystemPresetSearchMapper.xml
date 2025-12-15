@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.starmoon1617.starmie.demo.biz.mapper.SystemPresetSearchMapper">
+    <resultMap id="BaseResultMap" type="io.github.starmoon1617.starmie.demo.biz.model.SystemPresetSearch">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="conditions" jdbcType="VARCHAR" property="conditions" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, name, conditions, remark, create_by, create_time, update_by, update_time
+    </sql>
+    <sql id="Base_Condition">
+        <if test="criteria != null">
+            <where>
+            <foreach collection="criteria" item="criteriaItem" >
+                <if test="criteriaItem.values != null">
+                    ${criteriaItem.joinType}
+                    <if test="criteriaItem.combina == true">
+                        (
+                    </if>
+                    <foreach collection="criteriaItem.values" item="criterion">
+                        ${criterion.joinType} ${criterion.term} ${criterion.operator}
+                        <choose>
+                            <when test="criterion.type == 'SINGLE'">
+                                #{criterion.values[0]}
+                            </when>
+                            <when test="criterion.type == 'MULTI'">
+                                <foreach close=")" collection="criterion.values" item="value" open="(" separator=",">
+                                    #{value}
+                                </foreach>
+                            </when>
+                            <when test="criterion.type == 'DUAL'">
+                                #{criterion.values[0]} AND #{criterion.values[1]}
+                            </when>
+                        </choose>
+                    </foreach>
+                    <if test="criteriaItem.combina == true">
+                        )
+                    </if>
+                </if>
+            </foreach>
+            </where>
+        </if>
+    </sql>
+    <sql id="Base_Sort_Condition">
+        <if test="sortCriteria != null">
+            <foreach close="" collection="sortCriteria" item="sortCriterion" open=" ORDER BY " separator=",">
+                ${sortCriterion.term}
+                <if test="sortCriterion.type != null and sortCriterion.type != ''">
+                    ${sortCriterion.type}
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="Base_Limitation_Condition">
+        <if test="limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemPresetSearch">
+        insert into system_preset_search
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="conditions != null">
+                conditions,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="conditions != null">
+                #{conditions,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemPresetSearch">
+        update system_preset_search
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="conditions != null">
+                conditions = #{conditions,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemPresetSearch">
+        delete from system_preset_search
+        where id=#{id,jdbcType=INTEGER}
+    </delete>
+    <select id="select" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemPresetSearch" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from system_preset_search
+        where id=#{id,jdbcType=INTEGER}
+    </select>
+    <select id="count" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultType="java.lang.Integer">
+        select count(1) from system_preset_search
+        <include refid="Base_Condition" />
+    </select>
+    <select id="selectList" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from system_preset_search
+        <include refid="Base_Condition" />
+        <include refid="Base_Sort_Condition" />
+        <include refid="Base_Limitation_Condition" />
+    </select>
+    
+    <select id="selectConditions" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="BaseResultMap" >
+        select id, name, conditions, create_by 
+        from system_preset_search 
+        <include refid="Base_Condition" />
+    </select>
+</mapper>

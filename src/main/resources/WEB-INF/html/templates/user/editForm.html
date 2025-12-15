@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <v-dialog th:fragment="editForm" v-model="editDialog.show" max-width="600px" min-width="300px">
+        <v-card>
+            <v-card-title>
+                <span class="headline">{{ editDialog.title }}</span>
+            </v-card-title>
+            <v-card-text>
+                <v-container>
+                    <v-row>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.email" label="邮箱" outlined dense v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.loginName" label="登录名称" dense outlined v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.name" label="名称" outlined dense v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.age" label="年龄" outlined dense v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.status" label="状态" outlined dense v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                        <v-col cols="1" sm="4" md="4">
+                            <template>
+                                <v-text-field v-model="editedItem.remark" label="备注" outlined dense v-bind:readOnly="editDialog.readOnly"></v-text-field>
+                            </template>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <template v-if="editDialog.readOnly" >
+                    <v-btn color="blue darken-1" text @click="close" dense>确定</v-btn>
+                </template>
+                <template v-else >
+                    <v-btn color="blue darken-1" text @click="close" dense>取消</v-btn>
+                    <v-btn color="blue darken-1" text @click="save" dense>保存</v-btn>
+                </template>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</body>
+</html>

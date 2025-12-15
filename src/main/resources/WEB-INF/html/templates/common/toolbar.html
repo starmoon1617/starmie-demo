@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <v-layout th:fragment="commonToolbar">
+        <v-container fluid>
+            <v-row>
+                <v-col cols="6" sm="6" md="6">
+                    <v-btn height="30" dense outlined color="primary" dark class="mb-2 mr-1 toolBarBtn" @click="search">查找</v-btn>
+                    <v-btn height="30" dense outlined color="primary" dark class="mb-2 mr-1 toolBarBtn" @click="clear">清除</v-btn>
+                    <v-btn height="30" th:if="${privilege.createFlag == 1}" dense outlined color="primary" dark class="mb-2 mr-1 toolBarBtn" @click="create">新增</v-btn>
+                    <v-btn height="30" th:if="${privilege.importFlag == 1}" dense outlined color="primary" dark class="mb-2 mr-1 toolBarBtn" @click="importData">导入</v-btn>
+                    <v-btn height="30" th:if="${privilege.exportFlag == 1}" dense outlined color="primary" dark class="mb-2 mr-1 toolBarBtn" @click="exportDatas">导出</v-btn>
+                        <a href="#" hidden="true" style="display:none" id="downLoadFileHref" ref="downLoadFileHref"></a>
+                </v-col>
+                <v-col cols="6" sm="6" md="6">
+                    <v-spacer></v-spacer>
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-layout>
+    <template th:fragment="actionBar" v-slot:item.actions="{ item }">
+        <v-tooltip top content-class="toolTip">
+            <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="viewItem(item)">mdi-text-box-outline</v-icon>
+            </template>
+            <span>查看</span>
+        </v-tooltip>
+        <v-tooltip top content-class="toolTip">
+            <template v-slot:activator="{ on, attrs }">
+                <v-icon th:if="${privilege.updateFlag == 1}" v-bind="attrs" v-on="on" class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+            </template>
+            <span>编辑</span>
+        </v-tooltip>
+        <v-tooltip top content-class="toolTip">
+            <template v-slot:activator="{ on, attrs }">
+                <v-icon th:if="${privilege.deleteFlag == 1}" v-bind="attrs" v-on="on" class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+            </template>
+            <span>删除</span>
+        </v-tooltip>
+    </template>
+</body>
+
+</html>

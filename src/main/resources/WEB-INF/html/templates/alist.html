@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <title>Vue Router Test</title>
+    <link th:href="@{/@mdi/font/css/materialdesignicons.css}" href="/@mdi/font/css/materialdesignicons.css"
+        rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/vuetify-v2.4.3.min.css}" href="/css/vuetify-v2.4.3.min.css" rel="stylesheet"
+        type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app>
+            </v-app-bar>
+            <v-navigation-drawer app> <!-- -->
+                <router-link to="/excel_list">Test Excel List</router-link>
+                <router-link to="/test">Test Link</router-link>
+            </v-navigation-drawer>
+            <v-main>
+                <v-tabs fixed-tabs>
+                    <v-tab to="/foo">Foo</v-tab>
+                    <v-tab to="/test">Bar</v-tab>
+                </v-tabs>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
+            </v-main>
+            <v-footer app> <!-- --> </v-footer>
+        </v-app>
+    </div>
+    <script th:src="@{/js/vue.min.js}" src="/js/vue.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/vue-router.min.js}" src="/js/vue-router.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/axios.min.js}" src="/js/axios.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/vuetify-v2.4.3.min.js}" src="/js/vuetify-v2.4.3.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/crypto-js.js}" src="/js/crypto-js.js" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" src="/js/common.js" type="text/javascript"></script>
+    <script type="text/javascript" th:inline="javascript">
+        const test = {template: '<div>this is a test link</div>'};
+        const router = new VueRouter([
+            {path: "/excel_list", component: () => import(/*[[@{/excel/pelist}]]*/"/excel/pelist")},
+            {path: "/test", component: test}
+        ]);
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            router: router,
+        });
+    </script>
+</body>
+
+</html>

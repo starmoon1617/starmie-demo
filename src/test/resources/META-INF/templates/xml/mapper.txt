@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="[(${className})]">
+    <resultMap id="[(${resultMapId})]" type="[(${modelName})]">[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"]
+        <id column="[(${column.column})]" jdbcType="[(${column.jdbcType})]" property="[(${column.property})]" />[/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column : ${columns}"]
+        <result column="[(${column.column})]" jdbcType="[(${column.jdbcType})]" property="[(${column.property})]" />[/][/]
+    </resultMap>
+    <sql id="[(${columnSqlId})]">
+        [# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column, st : ${primaryColumns}"][# th:if="${(((st.count) % 10) == 1) && (st.count != 1)}"]
+        [/][(${column.column})], [/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:with="cnt=${#lists.size(primaryColumns) + st.count}"][# th:if="${(((cnt) % 10) == 1) && (cnt != 1)}"]
+        [/][/][(${column.column})][# th:if="${!st.last}"], [/][/][/]
+    </sql>
+    <sql id="Base_Condition">
+        <if test="criteria != null">
+            <where>
+                <foreach collection="criteria" item="criteriaItem">
+                    <if test="criteriaItem.values != null">
+                        ${criteriaItem.joinType}
+                        <if test="criteriaItem.combina == true">
+                            (
+                        </if>
+                        <foreach collection="criteriaItem.values" item="criterion">
+                            ${criterion.joinType} ${criterion.term} ${criterion.operator}
+                            <choose>
+                                <when test="criterion.type == 'SINGLE'">
+                                    #{criterion.values[0]}
+                                </when>
+                                <when test="criterion.type == 'MULTI'">
+                                    <foreach collection="criterion.values" item="value" open="(" separator="," close=")">
+                                        #{value}
+                                    </foreach>
+                                </when>
+                                <when test="criterion.type == 'DUAL'">
+                                    #{criterion.values[0]} AND #{criterion.values[1]}
+                                </when>
+                            </choose>
+                        </foreach>
+                        <if test="criteriaItem.combina == true">
+                            )
+                        </if>
+                    </if>
+                </foreach>
+            </where>
+        </if>
+    </sql>
+    <sql id="Base_Sort_Condition">
+        <if test="sortCriteria != null">
+            <foreach collection="sortCriteria" item="sortCriterion" open=" ORDER BY " separator=",">
+                ${sortCriterion.term}
+                <if test="sortCriterion.type != null and sortCriterion.type != ''">
+                    ${sortCriterion.type}
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="Base_Limitation_Condition">
+        <if test="limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="[(${modelName})]">
+        insert into [(${tableName})]
+        <trim prefix="(" suffix=")" suffixOverrides=",">[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"]
+            <if test="[(${column.property})] != null">
+                [(${column.column})],
+            </if>[/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column : ${columns}"]
+            <if test="[(${column.property})] != null">
+                [(${column.column})],
+            </if>[/][/]
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"]
+            <if test="[(${column.property})] != null">
+                #{[(${column.property})],jdbcType=[(${column.jdbcType})]},
+            </if>[/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column : ${columns}"]
+            <if test="[(${column.property})] != null">
+                #{[(${column.property})],jdbcType=[(${column.jdbcType})]},
+            </if>[/][/]
+        </trim>
+    </insert>
+    <update id="update" parameterType="[(${modelName})]">
+        update [(${tableName})]
+        <set>[# th:unless="${#lists.isEmpty(columns)}"][# th:each="column : ${columns}"]
+            <if test="[(${column.property})] != null">
+                [(${column.column})] = #{[(${column.property})],jdbcType=[(${column.jdbcType})]},
+            </if>[/][/]
+        </set>
+        where[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column, st : ${primaryColumns}"][# th:if="${st.index != 0}"]
+        AND[/] [(${column.column})]=#{[(${column.property})],jdbcType=[(${column.jdbcType})]}[/][/]
+    </update>
+    <delete id="delete" parameterType="[(${modelName})]">
+        delete from [(${tableName})]
+        where[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column, st : ${primaryColumns}"][# th:if="${st.index != 0}"]
+        AND[/] [(${column.column})]=#{[(${column.property})],jdbcType=[(${column.jdbcType})]}[/][/]
+    </delete>
+    <select id="select" parameterType="[(${modelName})]" resultMap="[(${resultMapId})]">
+        select 
+        <include refid="[(${columnSqlId})]" />
+        from [(${tableName})]
+        where[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column, st : ${primaryColumns}"][# th:if="${st.index != 0}"]
+        AND[/] [(${column.column})]=#{[(${column.property})],jdbcType=[(${column.jdbcType})]}[/][/]
+    </select>
+    <select id="count" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultType="java.lang.Integer">
+        select count(1) from [(${tableName})]
+        <include refid="Base_Condition" />
+    </select>
+    <select id="selectList" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="[(${resultMapId})]">
+        select 
+        <include refid="[(${columnSqlId})]" />
+        from [(${tableName})]
+        <include refid="Base_Condition" />
+        <include refid="Base_Sort_Condition" />
+        <include refid="Base_Limitation_Condition" />
+    </select>
+</mapper>

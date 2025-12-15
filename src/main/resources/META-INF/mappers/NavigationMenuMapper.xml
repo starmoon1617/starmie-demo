@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.starmoon1617.starmie.demo.biz.mapper.NavigationMenuMapper">
+    <resultMap id="BaseResultMap" type="io.github.starmoon1617.starmie.demo.biz.model.NavigationMenu">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="menu_no" jdbcType="VARCHAR" property="menuNo" />
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+        <result column="uri" jdbcType="VARCHAR" property="uri" />
+        <result column="module_no" jdbcType="VARCHAR" property="moduleNo" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, menu_no, menu_name, uri, module_no, create_time, create_by, update_time, update_by
+    </sql>
+    <sql id="Base_Condition">
+        <if test="criteria != null">
+            <where>
+            <foreach collection="criteria" item="criteriaItem">
+                <if test="criteriaItem.values != null">
+                    ${criteriaItem.joinType}
+                    <if test="criteriaItem.combina == true">
+                        (
+                    </if>
+                    <foreach collection="criteriaItem.values" item="criterion">
+                        ${criterion.joinType} ${criterion.term} ${criterion.operator}
+                        <choose>
+                            <when test="criterion.type == 'SINGLE'">
+                                #{criterion.values[0]}
+                            </when>
+                            <when test="criterion.type == 'MULTI'">
+                                <foreach close=")" collection="criterion.values" item="value" open="(" separator=",">
+                                    #{value}
+                                </foreach>
+                            </when>
+                            <when test="criterion.type == 'DUAL'">
+                                #{criterion.values[0]} AND #{criterion.values[1]}
+                            </when>
+                        </choose>
+                    </foreach>
+                    <if test="criteriaItem.combina == true">
+                        )
+                    </if>
+                </if>
+            </foreach>
+            </where>
+        </if>
+    </sql>
+    <sql id="Base_Sort_Condition">
+        <if test="sortCriteria != null">
+            <foreach close="" collection="sortCriteria" item="sortCriterion" open=" ORDER BY " separator=",">
+                ${sortCriterion.term}
+                <if test="sortCriterion.type != null and sortCriterion.type != ''">
+                    ${sortCriterion.type}
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="Base_Limitation_Condition">
+        <if test="limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="io.github.starmoon1617.starmie.demo.biz.model.NavigationMenu">
+        insert into navigation_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="menuNo != null">
+                menu_no,
+            </if>
+            <if test="menuName != null">
+                menu_name,
+            </if>
+            <if test="uri != null">
+                uri,
+            </if>
+            <if test="moduleNo != null">
+                module_no,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="menuNo != null">
+                #{menuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleNo != null">
+                #{moduleNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="io.github.starmoon1617.starmie.demo.biz.model.NavigationMenu">
+        update navigation_menu
+        <set>
+            <if test="menuNo != null">
+                menu_no = #{menuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                menu_name = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleNo != null">
+                module_no = #{moduleNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id=#{id,jdbcType=BIGINT}
+    </update>
+    <delete id="delete" parameterType="io.github.starmoon1617.starmie.demo.biz.model.NavigationMenu">
+        delete from navigation_menu
+        where id=#{id,jdbcType=BIGINT}
+    </delete>
+    <select id="select" parameterType="io.github.starmoon1617.starmie.demo.biz.model.NavigationMenu" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from navigation_menu
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+    <select id="count" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultType="java.lang.Integer">
+        select count(1) from navigation_menu
+        <include refid="Base_Condition" />
+    </select>
+    <select id="selectList" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from navigation_menu
+        <include refid="Base_Condition" />
+        <include refid="Base_Sort_Condition" />
+        <include refid="Base_Limitation_Condition" />
+    </select>
+</mapper>

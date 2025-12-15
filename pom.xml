@@ -1,0 +1,235 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.starmoon1617</groupId>
+    <artifactId>starmie-demo</artifactId>
+    <version>0.0.1</version>
+    <description>demo for starmie framework</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <versions.plugin.ver>2.16.1</versions.plugin.ver>
+        <java.ver>17</java.ver>
+        <compiler.plugin.ver>3.11.0</compiler.plugin.ver>
+        <surefire.plugin.ver>3.1.2</surefire.plugin.ver>
+        <assembly.plugin.ver>3.6.0</assembly.plugin.ver>
+        <spring.boot.ver>3.1.3</spring.boot.ver>
+        <spring.ver>6.0.11</spring.ver>
+        <slf4j.ver>2.0.7</slf4j.ver>
+        <log4j2.ver>2.17.0</log4j2.ver>
+        <mybatis.boot.ver>3.0.2</mybatis.boot.ver>
+        <mybatis.ver>3.5.13</mybatis.ver>
+        <mybatis.generator.ver>1.4.2</mybatis.generator.ver>
+        <poi.ver>5.2.3</poi.ver>
+        <pdfbox.ver>2.0.27</pdfbox.ver>
+        <freemarker.ver>2.3.32</freemarker.ver>
+        <starmie.ver>0.0.4</starmie.ver>
+        <bcprov.ver>1.77</bcprov.ver>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.ver}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>${log4j2.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.boot.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.starmoon1617</groupId>
+                <artifactId>starmie-app-web</artifactId>
+                <version>${starmie.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.starmoon1617</groupId>
+                <artifactId>starmie-boot-banner</artifactId>
+                <version>${starmie.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.starmoon1617</groupId>
+                <artifactId>starmie-boot-executor</artifactId>
+                <version>${starmie.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.starmoon1617</groupId>
+                <artifactId>starmie-generator-thymeleaf</artifactId>
+                <version>${starmie.ver}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov.ver}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- spring web boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- END spring web boot -->
+        <!-- spring websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!-- END spring websocket -->
+        <!-- UnderTom -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+        <!-- END UnderTom -->
+        <!-- Thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!-- END Thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <!-- Mybatis boot -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- END Mybatis boot -->
+        <!-- Hikari CP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <!-- END Hikari CP -->
+        <!-- mysql -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+        <!-- END mysql -->
+        <!-- Spring boot test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- END Spring boot test -->
+        <dependency>
+            <groupId>io.github.starmoon1617</groupId>
+            <artifactId>starmie-app-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.starmoon1617</groupId>
+            <artifactId>starmie-boot-banner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.starmoon1617</groupId>
+            <artifactId>starmie-boot-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.starmoon1617</groupId>
+            <artifactId>starmie-generator-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.plugin.ver}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly.plugin.ver}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.ver}</version>
+                <configuration>
+                    <source>${java.ver}</source>
+                    <target>${java.ver}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>io.github.starmoon1617.starmie.demo.web.boot.Launcher</mainClass>
+                            <layout>JAR</layout>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

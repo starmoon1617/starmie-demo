@@ -1,0 +1,423 @@
+<th:block th:fragment="script">
+    <script th:inline="javascript">
+            export default {
+                data() {
+                    return {
+                        options : {
+                            statusList:[],
+                            updateByList:[]
+                        },
+                        searchLabel: {
+                            id:"ID",
+                            email:"email",
+                            loginName:"登录名称",
+                            name:'名称', 
+                            age:'年龄', 
+                            status:'状态', 
+                            remark:'备注', 
+                            createTime:'创建时间', 
+                            createBy:'创建人', 
+                            updateTime:'更新时间', 
+                            updateBy:'更新人'
+                        },
+                        searchForm:{
+                            show:false,
+                            items : {
+                                id:{opt:0, type:'I', value:[]}, 
+                                email:{opt:0, type:'S', value:''}, 
+                                loginName:{opt:0, type:'S', value:''}, 
+                                name:{opt:0, type:'S', value:''}, 
+                                age:{opt:0, type:'I', value:[]}, 
+                                status:{opt:0, type:'I', value:[]}, 
+                                remark:{opt:0, type:'S', value:''}, 
+                                createBy:{opt:0, type:'S', value:''}, 
+                                updateBy:{opt:0, type:'S', value:[]},
+                                createTime:{show:false,opt:10,type:'D',value:[]},
+                                updateTime:{show:false,opt:10,type:'D',value:[]}
+                            }
+                        },
+                        searchPreset:{
+                            show:false,
+                            text:'',
+                            Item:{
+                                id:'',
+                                name:'',
+                                pcvs:[],
+                                flag:false
+                            },
+                            items:[],
+                            headers:[
+                                {text: '搜索条件', value: 'pcvs', width:200, sortable: false},
+                                {text: '视图名称', value: 'name', width:160, sortable: false}, 
+                                {text: '默认', value: 'defaultFlag', width:60, sortable: false},
+                                {text: '视图操作', value: 'actions', width:120, sortable: false }
+                            ]
+                        },
+                        deleteDialog:{
+                            show:false,
+                            msg:'',
+                            title:'确认'
+                        },
+                        confirmDialog:{
+                            show:false,
+                            msg:'',
+                            title:''
+                        },
+                        editDialog:{
+                            show:false,
+                            title:'',
+                            readOnly:true
+                        },
+                        importDialog:{
+                            show:false,
+                            importFile : null
+                        },
+                        editedItem: {
+                            id:'',
+                            email:'', 
+                            loginName:'', 
+                            name:'', 
+                            age:'', 
+                            status:'', 
+                            remark:'', 
+                            createTime:'', 
+                            createBy:'', 
+                            updateTime:'', 
+                            updateBy:''
+                        },
+                        footOptions: {
+                            itemsPerPageOptions : [10,20,50],
+                            dense:true
+                        },
+                        pagination : {
+                            itemsPerPage : 20,
+                            page : 1
+                        },
+                        tableDatas: {
+                            headers: [ 
+                                {text: '主键', value: 'id', width:100, sortable: false},
+                                {text: '邮箱', value: 'email', width:120, sortable: false}, 
+                                {text: '登录名称', value: 'loginName', width:100, sortable: false}, 
+                                {text: '名称', value: 'name', width:100, sortable: false}, 
+                                {text: '年龄', value: 'age', width:60, sortable: false}, 
+                                {text: '状态', value: 'status', width:40, sortable: false}, 
+                                {text: '备注', value: 'remark', width:100, sortable: false}, 
+                                {text: '创建时间', value: 'createTime', width:160, sortable: false}, 
+                                {text: '创建用户', value: 'createBy', width:100, sortable: false}, 
+                                {text: '更新时间', value: 'updateTime', width:160, sortable: false}, 
+                                {text: '更新用户', value: 'updateBy', width:100, sortable: false},
+                                {text: '操作', value: 'actions', width:100, sortable: false }
+                            ],
+                            dataItems: [],
+                            total : 0,
+                            exportExclude : ['id', 'actions'],
+                            exportFileName : "User导出"
+                        },
+                        datePicker : {
+                            months:[
+                                {value:1,text:'January'},{value:2,text:'February'},{value:3,text:'March'},
+                                {value:4,text:'April'},{value:5,text:'May'},{value:6,text:'June'},
+                                {value:7,text:'July'},{value:8,text:'August'},{value:9,text:'September'},
+                                {value:10,text:'October'},{value:11,text:'November'},{value:12,text:'December'}
+                            ],
+                            years:[],
+                            days:[
+                                {text: 'Sun', value: 'sun', width:36, sortable: false},
+                                {text: 'Mon', value: 'mon', width:36, sortable: false},
+                                {text: 'Tue', value: 'tue', width:36, sortable: false}, 
+                                {text: 'Wed', value: 'wed', width:36, sortable: false}, 
+                                {text: 'Thu', value: 'thu', width:36, sortable: false}, 
+                                {text: 'Fri', value: 'fri', width:36, sortable: false}, 
+                                {text: 'Sat', value: 'sat', width:36, sortable: false}
+                            ],
+                            updateTime:{
+                                year:null,
+                                month:null,
+                                days:[],
+                                selected:[]
+                            }
+                        }
+                    }
+                },
+                computed: {
+                    createTimeText () {
+                        return this.searchForm.items.createTime.value.sort().join('  至  ');
+                    },
+                    updateTimeText () {
+                        console.info(this.searchForm.items.updateTime.value);
+                        return this.searchForm.items.updateTime.value.sort().join('  至  ');
+                    }
+                },
+                methods: {
+                    loadDatas() {
+                        let _this = this;
+                        Common.searchDatas(/*[[@{/user/list}]]*/'/user/list', _this.searchForm.searchItem, _this.pagination, function(response){
+                            let resp = response.data;
+                            if(!resp.code && resp.data) {
+                                _this.tableDatas.total = resp.data.total;
+                                if(resp.data.total > 0) {
+                                    _this.tableDatas.dataItems = resp.data.elms;
+                                } else {
+                                    _this.tableDatas.dataItems = [];
+                                }
+                            } else {
+                                console.log(resp.msg);
+                            }
+                        }, function(error){
+                            console.log(error);
+                        });
+                    },
+                    search() {
+                        console.info(this.searchForm.items.id.value);
+                        console.info(this.searchForm.items.createTime.value);
+                        this.loadDatas();
+                    },
+                    clear() {
+                        let isDoClear = false;
+                        for(let p in this.searchForm.searchItem) {
+                            if (this.searchForm.searchItem[p].value !== "") {
+                                this.searchForm.searchItem[p].value = "";
+                                isDoClear = true;
+                            }
+                        }
+                        if(isDoClear) {
+                            this.search();
+                        }
+                    },
+                    create() {
+                        this.editDialog.readOnly = false; 
+                        this.editDialog.title = "新增";
+                        this.editedItem = Object.assign({}, {
+                            id:'',
+                            email:'', 
+                            loginName:'', 
+                            name:'', 
+                            age:'', 
+                            status:'', 
+                            remark:'', 
+                            createTime:'', 
+                            createBy:'', 
+                            updateTime:'', 
+                            updateBy:''
+                        });
+                        this.editDialog.show = true;
+                    }, 
+                    viewItem (item) {
+                        this.editDialog.readOnly = true;
+                        this.editDialog.title = "查看";
+                        this.editedItem = Object.assign({}, item);
+                        this.editDialog.show = true;
+                    },
+                    editItem (item) {
+                        this.editDialog.readOnly = false;
+                        this.editDialog.title = "编辑";
+                        this.editedItem = Object.assign({}, item);
+                        this.editDialog.show = true;
+                    },
+                    deleteItem (item) {
+                        this.editedItem = Object.assign({}, item);
+                        this.deleteDialog.msg = "确定要删除 " + item.name + "(" + item.email + ")";
+                        this.deleteDialog.show = true;
+                    },
+                    close () {
+                        this.editDialog.show = false
+                    },
+                    confirmDelete() {
+                        this.deleteData(this.editedItem);
+                        this.deleteDialog.show = false;
+                    },
+                    cancelDelete() {
+                        this.deleteDialog.show = false
+                        this.editedItem = Object.assign({}, {
+                            id:'',
+                            email:'', 
+                            loginName:'', 
+                            name:'', 
+                            age:'', 
+                            status:'', 
+                            remark:'', 
+                            createTime:'', 
+                            createBy:'', 
+                            updateTime:'', 
+                            updateBy:''
+                        });
+                    },
+                    save () {
+                        this.saveData(this.editedItem);
+                        this.close();
+                    },
+                    colseConfirm() {
+                        this.confirmDialog.show = false;
+                    },
+                    saveData(item) {
+                        let _this = this;
+                        let url = /*[[@{/user/save}]]*/'/user/save'; 
+                        if (item.id) {
+                            url = /*[[@{/user/update}]]*/'/user/update'; 
+                        }
+                        Common.updateData(url, item, function(response){
+                            let resp = response.data;
+                            if(!resp.code && resp.data) {
+                                _this.confirmDialog.title = "成功";
+                                _this.confirmDialog.msg = "保存成功";
+                            } else {
+                                _this.confirmDialog.title = "失败";
+                                _this.confirmDialog.msg = "保存失败";
+                            }
+                            _this.confirmDialog.show = true;
+                        }, function(error){
+                            _this.confirmDialog.title = "失败";
+                            _this.confirmDialog.msg = "异常:" + error;
+                            _this.confirmDialog.show = true;
+                        });
+                    },
+                    deleteData(item) {
+                        let _this = this;
+                        Common.updateData(/*[[@{/user/delete}]]*/'/user/delete', item, function(response){
+                            let resp = response.data;
+                            if(!resp.code && resp.data) {
+                                _this.confirmDialog.title = "成功";
+                                _this.confirmDialog.msg = "删除成功";
+                            } else {
+                                _this.confirmDialog.title = "失败";
+                                _this.confirmDialog.msg = "删除失败";
+                            }
+                            _this.confirmDialog.show = true;
+                        }, function(error){
+                            _this.confirmDialog.title = "失败";
+                            _this.confirmDialog.msg = "异常:" + error;
+                            _this.confirmDialog.show = true;
+                        });
+                    },
+                    exportDatas() {
+                        let _this = this;
+                        Common.exportDatas(/*[[@{/user/export}]]*/'/user/export', _this.searchForm.searchItem, _this.exportFileName, _this.tableDatas.headers, function(error){
+                            _this.confirmDialog.title = "失败";
+                            _this.confirmDialog.msg = "异常:" + error;
+                            _this.confirmDialog.show = true;
+                        });
+                    },
+                    importData () {
+                        this.importDialog.importFile = null;
+                        this.importDialog.show = true;
+                    },
+                    importDatas () {
+                        let _this = this;
+                        Common.importDatas(/*[[@{/user/import}]]*/'/user/import', _this.importFile, 
+                        "id,email,loginName,name,age,status,remark,createTime,createBy,updateTime,updateBy", 
+                        function(response){
+                            let resp = response.data;
+                            if(!resp.code && resp.data) {
+                                _this.confirmDialog.title = "成功";
+                                _this.confirmDialog.msg = "导入成功";
+                            } else {
+                                _this.confirmDialog.title = "失败";
+                                _this.confirmDialog.msg = "导入失败," + resp.errorMsg;
+                            }
+                            _this.closeImport();
+                            _this.confirmDialog.show = true;
+                        }, 
+                        function(error){
+                            _this.confirmDialog.title = "失败";
+                            _this.confirmDialog.msg = "异常:" + error;
+                            _this.closeImport();
+                            _this.confirmDialog.show = true;
+                        });
+                    },
+                    closeImport() {
+                        this.importDialog.show = false;
+                        this.importDialog.importFile = null;
+                    },
+                    savePreset() {
+                        console.info("保存预设....")
+                    },
+                    updatePreset(item, index, type) {
+                        Common.updatePreset(/*[[@{/user}]]*/'/user', this.searchForm, item, index, type);
+                    },
+                    formatPreset(item) {
+                        Common.formatPreset(item.pcvs, this.searchLabel, {});
+                    },
+                    showDate(date) {
+                        Common.log(date);
+                    },
+                    updateTimeYearMonthChange(type, v) {
+                        if (type == 'month') {
+                            let tmpMonth = this.datePicker.updateTime.month + v;
+                            if(tmpMonth <= 0 ) {
+                                this.datePicker.updateTime.month = 12;
+                                this.datePicker.updateTime.year = this.datePicker.updateTime.year - 1;
+                            } else if (tmpMonth > 12 ) {
+                                this.datePicker.updateTime.month = 1;
+                                this.datePicker.updateTime.year = this.datePicker.updateTime.year + 1;
+                            } else {
+                                this.datePicker.updateTime.month = tmpMonth;
+                            }
+                        } else {
+                            this.datePicker.updateTime.year = this.datePicker.updateTime.year + v;
+                        }
+                        this.datePicker.updateTime.days = Common.initDays(this.datePicker.days, this.datePicker.updateTime, new Date(), this.searchForm.items.updateTime.value.sort());
+                    },
+                    updateTimeYearChange(year) {
+                        this.datePicker.updateTime.days = Common.initDays(this.datePicker.days, this.datePicker.updateTime, new Date(), this.searchForm.items.updateTime.value.sort());
+                    },
+                    updateTimeMonthChange(month) {
+                        this.datePicker.updateTime.days = Common.initDays(this.datePicker.days, this.datePicker.updateTime, new Date(), this.searchForm.items.updateTime.value.sort());
+                    },
+                    updateTimePickDate(item, type) {
+                        if (this.searchForm.items.updateTime.value.length > 1) {
+                            this.searchForm.items.updateTime.value.splice(0, 2);
+                        }
+                        let d = item[type].value;
+                        let selectedDate = this.datePicker.updateTime.year + '-' + (this.datePicker.updateTime.month < 10 ? '0' : '') + this.datePicker.updateTime.month + '-' + (d < 10 ? '0' : '' ) + d;
+                        this.$set(this.searchForm.items.updateTime.value, this.searchForm.items.updateTime.value.length, selectedDate);
+                        // 重新初始化日期表格
+                        this.datePicker.updateTime.days = Common.initDays(this.datePicker.days, this.datePicker.updateTime, new Date(), this.searchForm.items.updateTime.value.sort());
+                        if (this.searchForm.items.updateTime.value.length == 2) {
+                            this.searchForm.items.updateTime.show = false;
+                        }
+                    },
+                    statusBlur() {
+                        let v1 = null, v2 = null;
+                        if (this.searchForm.items.status.value && this.searchForm.items.status.value.length > 0) {
+                            v1 = this.searchForm.items.status.value[0];
+                            if (this.searchForm.items.status.value.length > 1) {
+                                v2 = this.searchForm.items.status.value[1];
+                            }
+                        }
+                        if ((v1 || v1 === 0) && (!isNaN(v1)) && (v2 || v2 === 0) && (!isNaN(v2))) {
+                            if((new Number(v1)) > (new Number(v2))) {
+                                this.$set(this.searchForm.items.status.value, 0, v2);
+                                this.$set(this.searchForm.items.status.value, 1, v1);
+                            }
+                        }
+                    }
+                },
+                mounted() {
+                    let _this = this;
+                    Common.loadPresets(/*[[@{/user}]]*/'/user', this.searchPreset);
+                    this.$watch('pagination', function() {
+                        this.loadDatas();
+                    },{deep:true});
+                    let date = new Date();
+                    for(let i = 1900; i <= 2099; i++) {
+                        this.datePicker.years.push(i);
+                    }
+                    this.datePicker.updateTime.year = date.getFullYear();
+                    this.datePicker.updateTime.month = (date.getMonth() + 1);
+                    this.datePicker.updateTime.days = Common.initDays(this.datePicker.days, this.datePicker.updateTime, date, []);
+                    // 初始化下拉列表
+                    Common.loadJsonOptions(this.$baseUrl, 'user', 'status', function(response){
+                            let resp = response.data;
+                            if(!resp.code && resp.data) {
+                                _this.options.statusList = resp.data.status;
+                                _this.options.updateByList = resp.data.user;
+                            } else {
+                                console.info(resp);
+                            }
+                        }, function(error){
+                            console.error(error);
+                        });
+                },
+            }
+    </script>
+</th:block>

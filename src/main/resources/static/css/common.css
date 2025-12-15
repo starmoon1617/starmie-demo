@@ -1,0 +1,64 @@
+html {min-width: 1200px !important;overflow-x: auto !important;}
+body {min-width: 1200px !important;overflow-x: auto !important;}
+
+@media screen and (max-width:1200px) {
+    html {width: 1200px; overflow-x: auto;}
+    body {width: 1200px; overflow-x: auto;}
+};
+
+header > .v-toolbar__content {padding-left: 0px !important; padding-right: 2px !important;}
+.tbar > .v-toolbar__content {padding-left: 0px !important; padding-right: 2px !important;}
+
+.logo .v-image__image {transform: translateX(-100%); filter: drop-shadow(236px 0 #FFF);}
+
+.mainContainer {width: calc(100% - 8px); border-radius: 4px;background-color: #F5F5F5;margin-top: 8px; margin-left: 8px;min-width: 1080px;padding: 0px;}
+.routerMain {padding: 0px !important;}
+
+.optSelector .v-list-item {padding: 0px 4px;min-height: 20px;}
+.optSelector .v-list--dense .v-list-item .v-list-item__content {padding-top: 4px;padding-bottom: 4px;}
+.dateSelectorText .v-text-field__slot {font-size: 0.75rem;}
+.tableData .v-data-table__wrapper table {border-collapse: collapse;}
+.tableData .v-data-table__wrapper th {border: 1px solid lightgrey;font-size: 0.75rem !important;background-color: #ECEFF1 !important;}
+.tableData .v-data-table__wrapper td {border: 1px solid lightgrey;font-size: 0.75rem !important;}
+.tableData .v-data-footer .v-data-footer__select .v-select {margin-top: 0px;margin-bottom: 2px;}
+.noTransform .v-btn__content {text-transform: none !important;}
+.navModule .v-list-item__title {font-size: 0.875rem !important;color: white;}
+.navModule .v-list-item__icon {color: white;min-width: 30px !important;}
+.navModule .v-list-item__icon .v-icon {color: white;}
+.navModule .v-list-group__items {background-color: #B3E5FC;}
+.navMenu .v-list-item__title {font-size: 0.8125rem !important;color: black;}
+.navSelected {background-color: #0D47A1;}
+.navSelected .v-list-item__title {color: white;}
+.searchForm .v-input__slot {min-height:20px !important;font-size: 0.75rem;background-color:#FFFFFF !important;}
+.searchForm .v-label {font-size: 0.75rem;transform: translateY(-4px);background:#FFFFFF;line-height: 16px;height: 16px;}
+.searchForm .v-label--active {transform: translateY(-16px) translateX(-2px) scale(.875) !important;}
+.searchFormSelector .v-input__append-inner {margin-top: 4px !important;}
+.searchFormSelector .v-select__selections {width: 100%; display: flex;flex-wrap: nowrap;overflow: hidden;white-space: nowrap;justify-content: flex-start;}
+.searchFormSelector .v-select__selections span {max-width: 99%; white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+.searchFormSelector .v-select__selections .span1 {flex: 0 0 auto;}
+.searchFormSelector .v-select__selections .span2 {flex-shrink: 1;}
+
+.tnumCard {border: thin solid rgba(0,0,0,.4) !important;border-radius:4px !important;}
+.cardSpan {transform: translateY(-7px) scale(.875) !important;background:#FFFFFF;margin-left: 6px !important;padding-left: 2px !important;}
+.searchTilde:hover {background: none}
+.tnumField .v-input__slot {min-height:20px !important;font-size: 0.75rem;}
+.tNumRight .v-input__slot input {text-align: right;}
+
+.datePicker .v-data-table__wrapper tr {border: 0px ;}
+.datePicker .v-data-table__wrapper tr:hover {background: none !important;}
+.datePicker .v-data-table__wrapper th {padding-left: 2px !important;padding-right: 2px !important; padding-bottom: 4px;justify-content: center; border: 0px !important;text-align: center !important;}
+.datePicker .v-data-table__wrapper td {padding-left: 2px !important;padding-right: 2px !important; padding-bottom: 4px !important; border: 0px !important; justify-content: center !important;text-align: center !important;}
+
+.datePickerSelector .v-input__slot {padding: 0px 6px !important;text-align: center !important;}
+.datePickerSelector .v-select__selections {text-align: center;justify-content: center;align-items: center;justify-content: center;}
+.datePickerSelector .v-select__selection {margin-right: 0px !important;width: 100%;text-align: center;justify-content: center;}
+.datePickerSelector .v-select__selection:focus {outline: none; box-shadow: none;}
+.datePickerSelector input {display: none !important;}
+
+.yearPickerMenu {max-height: 144px !important;max-width:60px !important; min-width:58px !important; transform: translateX(16px)}
+.yearPickerMenu .v-list-item {padding: 0px 8px !important;}
+.monthPickerMenu {max-height: 144px !important;max-width:40px !important; min-width:38px !important; transform: translateX(16px)}
+.monthPickerMenu .v-list-item {padding: 0px 8px !important;}
+
+.toolBarBtn {font-size: 0.75rem !important;background-color: #B3E5FC;}
+.toolTip {padding: 2px 8px; font-size: 0.75rem;}

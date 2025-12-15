@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <v-container th:fragment="searchForm" fluid class="pb-0">
+        <v-row dense >
+            <v-col cols="6">
+                <v-row dense >
+                    <v-col cols="3">
+                        <v-text-field height="30" outlined dense :label="searchLabel.email" v-model="searchForm.items.email.value" hide-details class="pt-0 pb-1 searchForm"></v-text-field>
+                    </v-col>
+                    <v-col cols="3">
+                        <v-text-field height="30" outlined dense :label="searchLabel.loginName" v-model="searchForm.items.loginName.value" hide-details class="pt-0 pb-1 searchForm"></v-text-field>
+                    </v-col>
+                    <v-col cols="3">
+                        <v-text-field height="30" outlined dense :label="searchLabel.name" v-model="searchForm.items.name.value" hide-details class="pt-0 pb-1 searchForm"></v-text-field>
+                    </v-col>
+                    <v-col cols="3">
+                        <v-text-field height="30" outlined dense :label="searchLabel.remark" v-model="searchForm.items.remark.value" hide-details class="pt-0 pb-1 searchForm"></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-col>
+            <v-col cols="6">
+                <v-row dense >
+                    <v-col cols="3">
+                        <v-text-field height="30" outlined dense :label="searchLabel.createBy" v-model="searchForm.items.createBy.value" hide-details class="pt-0 pb-1 searchForm"></v-text-field>
+                    </v-col>
+                    <v-col cols="3">
+                        <s-date-picker :label="searchLabel.createTime" v-model="searchForm.items.createTime.value"></s-date-picker>
+                    </v-col>
+                    <v-col cols="3">
+                        <t-num-field :label="searchLabel.age" v-model="searchForm.items.age.value" hide-details></t-num-field>
+                    </v-col>
+                    <v-col cols="3">
+                        <s-date-picker :label="searchLabel.updateTime" v-model="searchForm.items.updateTime.value" range hide-details></s-date-picker>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+        <v-row dense >
+            <v-col cols="6">
+                <v-row dense >
+                    <v-col cols="3">
+                        <v-select :items="options.statusList" :label="searchLabel.status" v-model="searchForm.items.status.value" dense outlined height="30" class="pt-0 pb-1 searchForm searchFormSelector" hide-details></v-select>
+                    </v-col>
+                    <v-col cols="3">
+                        <v-select :items="options.updateByList" :label="searchLabel.updateBy" v-model="searchForm.items.updateBy.value" dense outlined height="30" class="pt-0 pb-1 searchForm searchFormSelector" multiple hide-details>
+                            <template v-slot:selection="{ item, index }">
+                                <span class="span1" v-if="index === 0">{{ item.text }}</span><span v-if="index === 1" class="grey--text text-caption span2"> (+{{ searchForm.items.updateBy.value.length - 1 }}个)</span>
+                            </template>
+                        </v-select>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+    </v-container>
+</body>
+
+</html>

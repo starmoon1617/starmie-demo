@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="commonBody(vmain, scripts)" style="min-width: 1200px;">
+    <div id="app">
+        <v-app>
+            <v-app-bar app elevation="5" flat outlined style="height: 60px;" clipped-left>
+                <h1>Starmie Demo</h1>
+            </v-app-bar>
+            <v-navigation-drawer app style="max-height: calc(100% - 90px);min-width: 120px; max-width: 200px;" clipped> <!-- -->
+                <v-list nav dense v-model:opened="open">
+                    <v-list-group v-for="navigation in navigations" :key="navigation.moduleName" :value="navigation.moduleName">
+                        <template v-slot:activator>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="navigation.moduleName"></v-list-item-title>
+                            </v-list-item-content>
+                        </template>
+                        <v-list-item style="padding-left: 20%;" v-for="menu in navigation.menus" :key="menu.menuName" :title="menu.menuName" :value="menu.menuName" :href="menu.uri" >
+                            <v-list-item-content>
+                                <v-list-item-title v-text="menu.menuName"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-group>
+                </v-list>
+            </v-navigation-drawer>
+            <v-main th:replace="${vmain}">
+                <v-container>
+                </v-container>
+            </v-main>
+            <div th:replace="~{common/footer :: commonFooter}"></div>
+        </v-app>
+    </div>
+    <script defer th:src="@{/static/js/common/axios.min.js}" src="/static/js/common/axios.min.js" type="text/javascript"></script>
+    <script defer th:src="@{/static/js/common/common.js}" src="/static/js/common/common.js" type="text/javascript"></script>
+    <script defer th:src="@{/static/js/vue2/vue.js}" src="/static/js/vue2/vue.js" type="text/javascript"></script>
+    <script defer th:src="@{/static/js/vue2/vuetify.min.js}" src="/static/js/vue2/vuetify.min.js" type="text/javascript"></script>
+    <th:block th:replace="${scripts}" ></th:block>
+</body>
+</html>

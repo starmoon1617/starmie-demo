@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.starmoon1617.starmie.demo.biz.mapper.TextAttachMapper">
+    <resultMap id="BaseResultMap" type="io.github.starmoon1617.starmie.demo.biz.model.TextAttach">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="text_content" jdbcType="LONGVARCHAR" property="textContent" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, type, status, remark, create_time, create_by, update_time, update_by, text_content
+    </sql>
+    <sql id="Base_Condition">
+        <if test="criteria != null">
+            <where>
+            <foreach collection="criteria" item="criteriaItem">
+                <if test="criteriaItem.values != null">
+                    ${criteriaItem.joinType}
+                    <if test="criteriaItem.combina == true">
+                        (
+                    </if>
+                    <foreach collection="criteriaItem.values" item="criterion">
+                        ${criterion.joinType} ${criterion.term} ${criterion.operator}
+                        <choose>
+                            <when test="criterion.type == 'SINGLE'">
+                                #{criterion.values[0]}
+                            </when>
+                            <when test="criterion.type == 'MULTI'">
+                                <foreach collection="criterion.values" item="value" open="(" separator="," close=")">
+                                    #{value}
+                                </foreach>
+                            </when>
+                            <when test="criterion.type == 'DUAL'">
+                                #{criterion.values[0]} AND #{criterion.values[1]}
+                            </when>
+                        </choose>
+                    </foreach>
+                    <if test="criteriaItem.combina == true">
+                        )
+                    </if>
+                </if>
+            </foreach>
+            </where>
+        </if>
+    </sql>
+    <sql id="Base_Sort_Condition">
+        <if test="sortCriteria != null">
+            <foreach close="" collection="sortCriteria" item="sortCriterion" open=" ORDER BY " separator=",">
+                ${sortCriterion.term}
+                <if test="sortCriterion.type != null and sortCriterion.type != ''">
+                    ${sortCriterion.type}
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="Base_Limitation_Condition">
+        <if test="limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="io.github.starmoon1617.starmie.demo.biz.model.TextAttach">
+        insert into text_attach
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="textContent != null">
+                text_content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="textContent != null">
+                #{textContent,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="io.github.starmoon1617.starmie.demo.biz.model.TextAttach">
+        update text_attach
+        <set>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="textContent != null">
+                text_content = #{textContent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id=#{id,jdbcType=BIGINT}
+    </update>
+    <delete id="delete" parameterType="io.github.starmoon1617.starmie.demo.biz.model.TextAttach">
+        delete from text_attach
+        where id=#{id,jdbcType=BIGINT}
+    </delete>
+    <select id="select" parameterType="io.github.starmoon1617.starmie.demo.biz.model.TextAttach" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from text_attach
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+    <select id="count" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultType="java.lang.Integer">
+        select count(1) from text_attach
+        <include refid="Base_Condition" />
+    </select>
+    <select id="selectList" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from text_attach
+        <include refid="Base_Condition" />
+        <include refid="Base_Sort_Condition" />
+        <include refid="Base_Limitation_Condition" />
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <title>Starmie Demo</title>
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue3/vuetify.min.css}" href="/static/css/vue3/vuetify.min.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+        {"imports": {
+            "vue": "[[@{/static/js/vue3esm/vue.esm-browser.js}]]",
+            "vue-router" : "[[@{/static/js/vue3esm/vue-router.esm-browser.js}]]",
+            "axios" : "[[@{/static/js/vue3esm/axios.min.js}]]",
+            "vuetify" : "[[@{/static/js/vue3esm/vuetify.esm.js}]]"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app>
+            </v-app-bar>
+            <v-navigation-drawer app> <!-- -->
+                <router-link to="/user">用户管理</router-link>
+                <router-link to="/menu">菜单管理</router-link>
+            </v-navigation-drawer>
+            <v-main>
+                <v-tabs fixed-tabs>
+                    <v-tab to="/user">用户管理</v-tab>
+                    <v-tab to="/menu">菜单管理</v-tab>
+                </v-tabs>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
+            </v-main>
+            <v-footer app>
+                <div class="pt-0"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+            </v-footer>
+        </v-app>
+    </div>
+    <script type="module">
+        import {createApp, ref, defineAsyncComponent} from 'vue';
+        import {createVuetify} from 'vuetify';
+        import * as VueRouter from 'vue-router';
+        
+        const routes = [
+            {path: '/user', component: defineAsyncComponent(() => import('[[@{/user/toList.js}]]'))},
+            {path: '/menu', component: defineAsyncComponent(() => import('[[@{/navigation_menu/toList.js}]]'))},
+        ]
+        //
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        })
+        const vuetify = createVuetify({theme: {defaultTheme: 'light'}, });
+        app.use(vuetify).use(router).mount('#app');
+    </script>
+</body>
+
+</html>

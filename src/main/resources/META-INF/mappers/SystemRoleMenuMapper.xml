@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.starmoon1617.starmie.demo.biz.mapper.SystemRoleMenuMapper">
+    <resultMap id="BaseResultMap" type="io.github.starmoon1617.starmie.demo.biz.model.SystemRoleMenu">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_no" jdbcType="VARCHAR" property="roleNo" />
+        <result column="menu_no" jdbcType="VARCHAR" property="menuNo" />
+        <result column="public_flag" jdbcType="TINYINT" property="publicFlag" />
+        <result column="create_flag" jdbcType="TINYINT" property="createFlag" />
+        <result column="update_flag" jdbcType="TINYINT" property="updateFlag" />
+        <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+        <result column="import_flag" jdbcType="TINYINT" property="importFlag" />
+        <result column="export_flag" jdbcType="TINYINT" property="exportFlag" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, role_no, menu_no, public_flag, create_flag, update_flag, delete_flag, import_flag, export_flag, remark, 
+        create_by, create_time, update_by, update_time
+    </sql>
+    <sql id="Base_Condition">
+        <if test="criteria != null">
+            <where>
+                <foreach collection="criteria" item="criteriaItem">
+                    <if test="criteriaItem.values != null">
+                        ${criteriaItem.joinType}
+                        <if test="criteriaItem.combina == true">
+                            (
+                        </if>
+                        <foreach collection="criteriaItem.values" item="criterion">
+                            ${criterion.joinType} ${criterion.term} ${criterion.operator}
+                            <choose>
+                                <when test="criterion.type == 'SINGLE'">
+                                    #{criterion.values[0]}
+                                </when>
+                                <when test="criterion.type == 'MULTI'">
+                                    <foreach collection="criterion.values" item="value" open="(" separator="," close=")">
+                                        #{value}
+                                    </foreach>
+                                </when>
+                                <when test="criterion.type == 'DUAL'">
+                                    #{criterion.values[0]} AND #{criterion.values[1]}
+                                </when>
+                            </choose>
+                        </foreach>
+                        <if test="criteriaItem.combina == true">
+                            )
+                        </if>
+                    </if>
+                </foreach>
+            </where>
+        </if>
+    </sql>
+    <sql id="Base_Sort_Condition">
+        <if test="sortCriteria != null">
+            <foreach collection="sortCriteria" item="sortCriterion" open=" ORDER BY " separator=",">
+                ${sortCriterion.term}
+                <if test="sortCriterion.type != null and sortCriterion.type != ''">
+                    ${sortCriterion.type}
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="Base_Limitation_Condition">
+        <if test="limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemRoleMenu">
+        insert into system_role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="roleNo != null">
+                role_no,
+            </if>
+            <if test="menuNo != null">
+                menu_no,
+            </if>
+            <if test="publicFlag != null">
+                public_flag,
+            </if>
+            <if test="createFlag != null">
+                create_flag,
+            </if>
+            <if test="updateFlag != null">
+                update_flag,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="importFlag != null">
+                import_flag,
+            </if>
+            <if test="exportFlag != null">
+                export_flag,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="roleNo != null">
+                #{roleNo,jdbcType=VARCHAR},
+            </if>
+            <if test="menuNo != null">
+                #{menuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="publicFlag != null">
+                #{publicFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createFlag != null">
+                #{createFlag,jdbcType=TINYINT},
+            </if>
+            <if test="updateFlag != null">
+                #{updateFlag,jdbcType=TINYINT},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="importFlag != null">
+                #{importFlag,jdbcType=TINYINT},
+            </if>
+            <if test="exportFlag != null">
+                #{exportFlag,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemRoleMenu">
+        update system_role_menu
+        <set>
+            <if test="roleNo != null">
+                role_no = #{roleNo,jdbcType=VARCHAR},
+            </if>
+            <if test="menuNo != null">
+                menu_no = #{menuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="publicFlag != null">
+                public_flag = #{publicFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createFlag != null">
+                create_flag = #{createFlag,jdbcType=TINYINT},
+            </if>
+            <if test="updateFlag != null">
+                update_flag = #{updateFlag,jdbcType=TINYINT},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="importFlag != null">
+                import_flag = #{importFlag,jdbcType=TINYINT},
+            </if>
+            <if test="exportFlag != null">
+                export_flag = #{exportFlag,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemRoleMenu">
+        delete from system_role_menu
+        where id=#{id,jdbcType=INTEGER}
+    </delete>
+    <select id="select" parameterType="io.github.starmoon1617.starmie.demo.biz.model.SystemRoleMenu" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from system_role_menu
+        where id=#{id,jdbcType=INTEGER}
+    </select>
+    <select id="count" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultType="java.lang.Integer">
+        select count(1) from system_role_menu
+        <include refid="Base_Condition" />
+    </select>
+    <select id="selectList" parameterType="io.github.starmoon1617.starmie.core.criterion.BaseCriteria" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from system_role_menu
+        <include refid="Base_Condition" />
+        <include refid="Base_Sort_Condition" />
+        <include refid="Base_Limitation_Condition" />
+    </select>
+</mapper>

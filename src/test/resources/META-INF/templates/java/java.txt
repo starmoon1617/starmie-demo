@@ -1,0 +1,20 @@
+[# th:unless="${#strings.isEmpty(fileComment)}"][(${fileComment})]
+[/][# th:unless="${#strings.isEmpty(packageName)}"]package [(${packageName})];[/]
+[# th:unless="${#sets.isEmpty(imports)}"]
+[# th:each="impt : ${imports}"]import [(${impt})];
+[/][/][# th:unless="${#strings.isEmpty(comment)}"]
+[(${comment})][/][# th:unless="${#lists.isEmpty(annotations)}"][# th:each="anno : ${annotations}"]
+[(${anno})][/][/]
+public [(${classType})] [(${name})][# th:unless="${#strings.isEmpty(superClass)}"] extends [(${superClass})][/][# th:unless="${#lists.isEmpty(interfaces)}"] implements [# th:each="infc, st : ${interfaces}"][(${infc})][# th:if="${!st.last}"], [/][/][/] {
+[# th:unless="${#lists.isEmpty(fields)}"][# th:each="field : ${fields}"][# th:unless=${#lists.isEmpty(field.comments)}][# th:each="comment : ${field.comments}"]
+    [(${comment})][/][/][# th:unless=${#lists.isEmpty(field.annotations)}][# th:each="anno : ${field.annotations}"]
+    [(${anno})][/][/]
+    [# th:unless=${#lists.isEmpty(field.modifiers)}][# th:each="modifier : ${field.modifiers}"][(${modifier})] [/][/][(${field.type})] [(${field.name})][# th:unless="${#strings.isEmpty(field.value)}"] = [(${field.value})][/];[/][/][# th:unless="${#lists.isEmpty(methods)}"][# th:each="method : ${methods}"]
+[# th:unless=${#lists.isEmpty(method.comments)}][# th:each="comment : ${method.comments}"]
+    [(${comment})][/][/][# th:unless=${#lists.isEmpty(method.annotations)}][# th:each="anno : ${method.annotations}"]
+    [(${anno})][/][/]
+    [# th:unless=${#lists.isEmpty(method.modifiers)}][# th:each="modifier : ${method.modifiers}"][(${modifier})] [/][/][(${method.returnType})] [(${method.name})]([# th:unless="${#lists.isEmpty(method.parameters)}"][# th:each="p, st : ${method.parameters}"][(${p})][# th:if="${!st.last}"], [/][/][/]) {
+        [# th:unless="${#lists.isEmpty(method.implementations)}"][# th:each="implementation : ${method.implementations}"][(${implementation})][/][/]
+    }
+[/][/]
+}

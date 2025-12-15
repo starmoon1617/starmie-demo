@@ -1,0 +1,76 @@
+<script>
+    export default {
+        name:'t-num-field',
+        props: {
+            label: String,
+            value: {
+                type: Array,
+                default: () => ([]),
+            }
+        },
+        methods: {
+            onBlur() {
+                let v1 = null, v2 = null;
+                if (this.value && this.value.length > 0) {
+                    v1 = this.value[0];
+                    if (this.value.length > 1) {
+                        v2 = this.value[1];
+                    }
+                }
+                if ((v1 || v1 === 0) && (!isNaN(v1)) && (v2 || v2 === 0) && (!isNaN(v2))) {
+                    if((new Number(v1)) > (new Number(v2))) {
+                        this.$set(this.value, 0, v2);
+                        this.$set(this.value, 1, v1);
+                    }
+                }
+            },
+            getTextField(index) {
+                let cp = {'px-1':true, 'pt-0':true, 'pb-0':true, 'mt-0':true, tnumField:true};
+                if (index === 0) {
+                    cp.tNumRight = true;
+                }
+                let self = this;
+                return this.$createElement('v-text-field', {
+                    props: {dense: true, height:28,'single-line':true,'hide-details':true,value: self.value[index]},
+                    'class': cp,
+                    style:{width: '25%'},
+                    on:{
+                        blur:self.onBlur,
+                        input:function(v) {
+                            self.value[index] = v;
+                        }
+                    }
+                });
+            }
+        },
+        render: function(createElement) {
+            var _this = this;
+            return createElement('v-card', {
+                    'class':"tnumCard",
+                    props: {outlined: true}
+                }, [
+                    createElement('label', {
+                        'class': {'v-label':true, 'v-label--active':true, 'theme--light':true, cardSpan:true},
+                        style: {left: '0px', right: 'auto', position: 'absolute', 'font-size': '0.75rem'},
+                        domProps: {innerHTML: _this.label}
+                    }), 
+                    createElement('v-card-text',{
+                        'class': {'pa-0':true, 'ma-0':true}, 
+                    }, [
+                        createElement('v-row',{
+                            'class': {'pa-0':true, 'ma-0':true}, 
+                            style: {width: '100%'},
+                            props: {dense: true}
+                        }, [
+                            this.getTextField(0),
+                            createElement('label', {
+                                style: {height: '28px', width: '10%', padding: '2px 4px', 'text-align': 'center', color: 'black'},
+                                domProps: {innerHTML: '-'}
+                            }),
+                            this.getTextField(1)
+                        ])
+                    ]) 
+                ]);
+        }
+    }
+</script>

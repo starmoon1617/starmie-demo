@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <v-dialog th:fragment="editForm" v-model="dailogs.editDialog" max-width="600px" min-width="300px">
+        <v-card>
+            <v-card-title>
+                <span class="headline">{{ dailogs.editTitle }}</span>
+            </v-card-title>
+            <v-card-text>
+                <v-container>[# th:with="setResult=${counter.set('cnt', 0)}"][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"][# th:if="${counter.get('cnt') % 3 == 0}"]
+                    <v-row>[/]
+                        <v-col cols="1" sm="4" md="4">
+                            <v-text-field v-model="editedItem.[(${column.property})]" label="[(${column.remark})]" outlined v-bind:readOnly="dailogs.editDisabled"></v-text-field>
+                        </v-col>
+                    [# th:if="${(counter.get('cnt') % 3 == 2) || st.last }"]</v-row>[/][# th:with="setResult=${counter.set('cnt', (counter.get('cnt') + 1))}"][/][/][# th:if="${(counter.get('cnt') % 3 != 2) && st.last }"]
+                    </v-row>[/][/][/][/]
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <template v-if="dailogs.editDisabled" >
+                    <v-btn color="blue darken-1" text @click="close" dense>确定</v-btn>
+                </template>
+                <template v-else >
+                    <v-btn color="blue darken-1" text @click="close" dense>取消</v-btn>
+                    <v-btn color="blue darken-1" text @click="save" dense>保存</v-btn>
+                </template>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</body>
+</html>

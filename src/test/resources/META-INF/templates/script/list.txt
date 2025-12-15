@@ -1,0 +1,233 @@
+const vuetify = new Vuetify({ theme: { defaultTheme: 'light' }, });
+const app = new Vue({
+    el: '#app',
+    vuetify: vuetify,
+    data() {
+        return {
+            open:["x"],
+            navigations: [],
+            dailogs: {
+                editDisabled: true,
+                editDialog : false,
+                editTitle : "新增",
+                deleteDialog: false,
+                deleteTitle: "确认",
+                deleteMsg: "",
+                confirmDialog: false,
+                confirmTitle: "",
+                confirmMsg: "",
+                importFile: null,
+                importDialog: false,
+            },
+            editedItem: {[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:'',[/][/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:''[# th:if="${!st.last}"], [/][/][/][/]
+            },
+            searchForm: {[# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        _FC1_[(${#strings.substring(column.javaType,0,1)})]0_[(${column.property})]:''[# th:if="${!st.last}"], [/][/][/][/]
+            },
+            footOptions: {
+                itemsPerPageOptions: [10, 20, 50]
+            },
+            pagination: {
+                itemsPerPage: 20,
+                page: 1,
+                sortBy: [],
+                sortDesc: [],
+                groupBy: [],
+                groupDesc: [],
+                mustSort: false,
+                multiSort: false
+            },
+            tableDatas: {
+                headers: [ [# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                            {text: '[(${column.remark})]', value: '[(${column.property})]', width:100, sortable: false},[/][/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                            {text: '[(${column.remark})]', value: '[(${column.property})]', width:100, sortable: false},[/][/][/]
+                            { text: '操作', value: 'actions', width:120, sortable: false }
+                        ],
+                dataItems: [],
+                total: 0,
+                exportInfo: {
+                    extraInfos:[],
+                    excludeInfos: ['id', 'actions'],
+                    fileName: "[(${remark})]导出"
+                }
+            }
+        }
+    },
+    watch: {
+        pagination: {
+            handler() {
+                this.loadDatas();
+            },
+            deep: true,
+        },
+    },
+    methods: {
+        loadDatas() {
+            let _this = this;
+            Common.searchDatas(/*[(${#strings.concat("[[@{/", mapping ,"/list}]]")})]*/'/[(${mapping})]/list', _this.searchForm, _this.pagination, function(response) {
+                let resp = response.data;
+                if (!resp.code && resp.data) {
+                    _this.tableDatas.total = resp.data.total;
+                    if (resp.data.total > 0) {
+                        _this.tableDatas.dataItems = resp.data.elms;
+                    } else {
+                        _this.tableDatas.dataItems = [];
+                    }
+                } else {
+                    console.log(resp.msg);
+                }
+            }, function(error) {
+                console.log(error);
+            });
+        },
+        search() {
+            this.loadDatas();
+        },
+        clear() {
+            let isDoClear = false;
+            for (let p in this.searchForm) {
+                if (this.searchForm[p] !== "") {
+                    this.searchForm[p] = "";
+                    isDoClear = true;
+                }
+            }
+            if (isDoClear) {
+                this.search();
+            }
+        },
+        create() {
+            this.dailogs.editDisabled = false;
+            this.dailogs.editTitle = "新增";
+            this.editedItem = Object.assign({}, {[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:'',[/][/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:''[# th:if="${!st.last}"], [/][/][/][/]
+                    });
+            this.dailogs.editDialog = true;
+        },
+        viewItem(item) {
+            this.dailogs.editDisabled = true;
+            this.dailogs.editTitle = "查看";
+            this.editedItem = Object.assign({}, item);
+            this.dailogs.editDialog = true;
+        },
+        editItem(item) {
+            this.dailogs.editDisabled = false;
+            this.dailogs.editTitle = "编辑";
+            this.editedItem = Object.assign({}, item);
+            this.dailogs.editDialog = true;
+        },
+        deleteItem(item) {
+            this.editedItem = Object.assign({}, item);
+            this.dailogs.deleteMsg = "确定要删除 " + item.name + "(" + item.email + ")";
+            this.dailogs.deleteDialog = true;
+        },
+        close() {
+            this.dailogs.editDialog = false
+        },
+        confirmDelete() {
+            this.deleteData(this.editedItem);
+            this.dailogs.deleteDialog = false;
+        },
+        cancelDelete() {
+            this.dailogs.deleteDialog = false
+            this.editedItem = Object.assign({}, {[# th:unless="${#lists.isEmpty(primaryColumns)}"][# th:each="column : ${primaryColumns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:'',[/][/][/][# th:unless="${#lists.isEmpty(columns)}"][# th:each="column, st : ${columns}"][# th:unless="${(#strings.equals(column.property,'createBy')) || (#strings.equals(column.property,'createTime')) || (#strings.equals(column.property,'updateBy')) || (#strings.equals(column.property,'updateTime')) }"]
+                        [(${column.property})]:''[# th:if="${!st.last}"], [/][/][/][/]
+                    });
+        },
+        save() {
+            this.saveData(this.editedItem);
+            this.close();
+        },
+        colseConfirm() {
+            this.dailogs.confirmDialog = false;
+        },
+        saveData(item) {
+            let _this = this;
+            let url = /*[(${#strings.concat("[[@{/", mapping ,"/save}]]")})]*/'/[(${mapping})]/save';
+            if (item.id) {
+                url = /*[(${#strings.concat("[[@{/", mapping ,"/update}]]")})]*/'/[(${mapping})]/update';
+            }
+            Common.updateData(url, item, function(response) {
+                let resp = response.data;
+                if (resp.success && resp.data) {
+                    _this.dailogs.confirmTitle = "成功";
+                    _this.dailogs.confirmMsg = "保存成功";
+                } else {
+                    _this.dailogs.confirmFormTitle = "失败";
+                    _this.dailogs.confirmMsg = "保存失败";
+                }
+                _this.dailogs.confirmDialog = true;
+            }, function(error) {
+                _this.dailogs.confirmTitle = "失败";
+                _this.dailogs.confirmMsg = "异常:" + error;
+                _this.dailogs.confirmDialog = true;
+            });
+        },
+        deleteData(item) {
+            let _this = this;
+            Common.updateData(/*[(${#strings.concat("[[@{/", mapping ,"/delete}]]")})]*/'/[(${mapping})]/delete', item, function(response) {
+                let resp = response.data;
+                if (resp.success && resp.data) {
+                    _this.dailogs.confirmTitle = "成功";
+                    _this.dailogs.confirmMsg = "删除成功";
+                } else {
+                    _this.dailogs.confirmTitle = "失败";
+                    _this.dailogs.confirmMsg = "删除失败";
+                }
+                _this.dailogs.confirmDialog = true;
+            }, function(error) {
+                _this.dailogs.confirmTitle = "失败";
+                _this.dailogs.confirmMsg = "异常:" + error;
+                _this.dailogs.confirmDialog = true;
+            });
+        },
+        exportDatas() {
+            let _this = this;
+            Common.exportDatas(/*[(${#strings.concat("[[@{/", mapping ,"/export}]]")})]*/'/[(${mapping})]/export', _this.searchForm, _this.tableDatas.exportInfo, _this.tableDatas.headers, function(error) {
+                _this.dailogs.confirmTitle = "失败";
+                _this.dailogs.confirmMsg = "异常:" + error;
+                _this.dailogs.confirmDialog = true;
+            });
+        },
+        importData() {
+            this.dailogs.importFile = null;
+            this.dailogs.importDialog = true;
+        },
+        importDatas() {
+            let _this = this;
+            Common.importDatas(/*[(${#strings.concat("[[@{/", mapping ,"/import}]]")})]*/'/[(${mapping})]/import', _this.importFile,
+                "email,loginName,name,age,status,remark",
+                function(response) {
+                    let resp = response.data;
+                    if (resp.success && resp.data) {
+                        _this.dailogs.confirmTitle = "成功";
+                        _this.dailogs.confirmMsg = "导入成功";
+                    } else {
+                        _this.dailogs.confirmTitle = "失败";
+                        _this.dailogs.confirmMsg = "导入失败," + resp.errorMsg;
+                    }
+                    _this.closeImport();
+                    _this.dailogs.confirmDialog = true;
+                },
+                function(error) {
+                    _this.dailogs.confirmTitle = "失败";
+                    _this.dailogs.confirmMsg = "异常:" + error;
+                    _this.closeImport();
+                    _this.dailogs.confirmDialog = true;
+                });
+        },
+        closeImport() {
+            this.dailogs.importDialog = false;
+            this.dailogs.importFile = null;
+        }
+    },
+    mounted() {
+        let _this = this;
+        Common.initNavigations(/*[(${#strings.concat("[[@" , "{/", "}]]")})]*/'/', function(response) {
+            _this.navigations = response.data.data;
+        });
+    }
+});

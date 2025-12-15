@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{ common/header :: commonHeader(~{::title}) }">
+    <title>Starmie Demo</title>
+</head>
+
+<body th:replace="~{ common/body :: commonBody(~{::v-main}, ~{::script})}">
+    <v-main>
+        <v-container>
+        </v-container>
+    </v-main>
+    <script defer th:src="@{/script/index.js}" src="/script/index.js" type="text/javascript" ></script>
+</body>
+
+</html>

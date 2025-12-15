@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <v-dialog th:fragment="dialogImport" v-model="importDialog.show" max-width="400px" min-width="200px">
+        <v-card>
+            <v-card-title>
+                <span class="headline">导入</span>
+            </v-card-title>
+            <v-card-text>
+                <v-file-input id="importFile" placeholder="请选择要上传的文件" outlined v-model="importDialog.importFile"></v-file-input>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="importDatas" dense>导入</v-btn>
+                <v-btn color="blue darken-1" text @click="closeImport" dense>取消</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog th:fragment="dialogConfirm" v-model="confirmDialog.show" max-width="400px" min-width="200px">
+        <v-card>
+            <v-card-title>
+                <span class="headline">{{ confirmDialog.title }}</span>
+            </v-card-title>
+            <v-card-text> {{confirmDialog.msg}} </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="colseConfirm" dense>确定</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog th:fragment="dialogDelete" v-model="deleteDialog.show" max-width="400px" min-width="200px">
+        <v-card>
+            <v-card-title>
+                <span class="headline">{{ deleteDialog.title }}</span>
+            </v-card-title>
+            <v-card-text> {{deleteDialog.msg}} </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="cancelDelete" dense>取消</v-btn>
+                <v-btn color="blue darken-1" text @click="confirmDelete" dense>删除</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog th:fragment="dialogSearchPreset" v-model="searchPreset.show" max-width="600px" min-width="400px">
+        <v-card>
+            <v-card-title><span class="headline">视图编辑</span></v-card-title>
+            <v-divider class="mx-4"></v-divider>
+            <v-card-title>当前视图</v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col class="d-flex" cols="12" md="6" > 
+                        <v-textarea outlined v-model="searchPreset.searchText" readOnly="true"></v-textarea>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col class="d-flex" cols="12" md="6" > 
+                        <v-subheader>保存为新视图</v-subheader>
+                        <v-text-field  label="名称" outlined dense v-model="searchPreset.presetItem.name" hide-details ></v-text-field>
+                        <v-checkbox v-model="searchPreset.presetItem.flag" label="默认" color="info" hide-details ></v-checkbox>
+                        <v-btn color="blue darken-1" text @click="savePreset" dense>保存</v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            <v-divider class="mx-4"></v-divider>
+            <v-card-title>已有视图</v-card-title>
+            <v-card-text>
+                <v-container fluid>
+                    <v-data-table :headers="searchPreset.headers" :items="searchPreset.items" hide-default-footer class="elevation-1">
+                        <template v-slot:item.actions="{ item }">
+                            <v-chip class="ma-2" label text-color="white" @click="setDefault(item)"><v-icon left>mdi-label</v-icon>设为默认</v-chip>
+                            <v-chip class="ma-2" label text-color="white" @click="deletePreset(item)">删除<v-icon right>mdi-delete</v-icon></v-chip>
+                        </template>
+                        <template v-slot:item.pcvs="{ item }">
+                            <div>{{ formatPreset(item) }}</div>
+                        </template>
+                    </v-data-table>
+                </v-container>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
+</body>
+
+</html>

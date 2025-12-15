@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <title>Starmie Demo</title>
+    <link th:href="@{/@mdi/font/css/materialdesignicons.css}" href="/@mdi/font/css/materialdesignicons.css"
+        rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/vuetify.min.css}" href="/css/vuetify.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app>
+            </v-app-bar>
+            <v-navigation-drawer app> <!-- -->
+                <router-link to="/user">用户管理</router-link>
+                <router-link to="/menu">菜单管理</router-link>
+            </v-navigation-drawer>
+            <v-main>
+                <v-tabs fixed-tabs>
+                    <v-tab to="/user">用户管理</v-tab>
+                    <v-tab to="/menu">菜单管理</v-tab>
+                </v-tabs>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
+            </v-main>
+            <v-footer app>
+                <div class="pt-0"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+            </v-footer>
+        </v-app>
+    </div>
+    <script th:src="@{/js/vue.global.prod.js}" src="/js/vue.global.prod.js" type="text/javascript"></script>
+    <script th:src="@{/js/vue-router.global.prod.js}" src="/js/vue-router.global.prod.js"
+        type="text/javascript"></script>
+    <script th:src="@{/js/vue3-sfc-loader.js}" src="/js/vue3-sfc-loader.js" type="text/javascript"></script>
+    <script th:src="@{/js/axios.min.js}" src="/js/axios.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/vuetify.min.js}" src="/js/vuetify.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" src="/js/common.js" type="text/javascript"></script>
+    <script> 
+        
+        const options = {
+            moduleCache: {
+                vue: Vue
+            },
+            async getFile(url) {
+
+                const res = await fetch(url);
+                if (!res.ok)
+                    throw Object.assign(new Error(res.statusText + ' ' + url), {res});
+                return {
+                    getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text(),
+                }
+            },
+            addStyle(textContent) {
+                const style = Object.assign(document.createElement('style'), {textContent});
+                const ref = document.head.getElementsByTagName('style')[0] || null;
+                document.head.insertBefore(style, ref);
+            },
+        }
+        const {createApp} = Vue;
+        const {loadModule} = window['vue3-sfc-loader'];
+        const { createVuetify } = Vuetify;
+        const app = createApp({
+            el: '#app'
+        });
+        const routes = [
+            {path: '/user', component: Vue.defineAsyncComponent(() => loadModule('[[@{/user/toList.vue}]]', options))},
+            {path: '/menu', component: Vue.defineAsyncComponent(() => loadModule('[[@{/navigation_menu/toList.vue}]]', options))},
+        ]
+        //
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        })
+        const vuetify = createVuetify({theme: {defaultTheme: 'light'}, });
+        app.use(vuetify).use(router).mount('#app');
+    </script>
+</body>
+
+</html>

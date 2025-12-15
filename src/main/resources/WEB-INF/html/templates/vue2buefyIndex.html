@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <title>Starmie Demo</title>
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue2/buefy.min.css}" href="/static/css/vue2/vuetify.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <!-- nav bar -->
+        <b-navbar></b-navbar>
+        <!-- menu -->
+        <b-menu>
+            <b-menu-list>
+                <b-menu-item icon="account" label="My Account">
+                    <b-menu-item label="Account data" tag="router-link" to="/user"></b-menu-item>
+                    <b-menu-item label="Addresses"></b-menu-item>
+                </b-menu-item>
+            </b-menu-list>
+        </b-menu>
+        <!-- main view -->
+        <router-view></router-view>
+        <!-- footer -->
+        <footer class="footer">
+            <div class="pt-0"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+        </footer>
+    </div>
+    <script th:src="@{/static/js/common/axios.min.js}" src="/static/js/common/axios.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/common/common.js}" src="/static/js/common/common.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue.js}" src="/static/js/vue2/vue.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/buefy.min.js}" src="/static/js/vue2/buefy.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue-router.js}" src="/static/js/vue2/vue-router.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue2-sfc-loader.js}" src="/static/js/vue2/vue2-sfc-loader.js" type="text/javascript"></script>
+    <script type="module">
+        const {loadModule} = window['vue2-sfc-loader'];
+        const options = {
+            moduleCache: {
+                vue: Vue,
+                buefy: Buefy,
+            },
+            getFile(url) {
+                return fetch(url).then(response => response.ok ? response.text() : Promise.reject(response));
+            },
+            addStyle(styleStr) {
+                const style = document.createElement('style');
+                style.textContent = styleStr;
+                const ref = document.head.getElementsByTagName('style')[0] || null;
+                document.head.insertBefore(style, ref);
+            },
+            log(type, ...args) {
+                console.log(type, ...args);
+            }
+        }
+
+        const routes = [
+            {path: '/user', component: Vue.defineAsyncComponent(() => loadModule('[[@{/user/toList.vue}]]', options))},
+            {path: '/menu', component: Vue.defineAsyncComponent(() => loadModule('[[@{/navigation_menu/toList.vue}]]', options))},
+        ]
+            //
+        const router = new VueRouter({
+            mode: 'history',
+            routes,
+        })
+        const app = new Vue({
+            el: '#app',
+            router,
+        });
+    </script>
+</body>
+
+</html>

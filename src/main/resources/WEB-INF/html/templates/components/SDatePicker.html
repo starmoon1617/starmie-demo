@@ -1,0 +1,153 @@
+<template>
+    <v-menu v-model="show" :close-on-content-click="false" :return-value.sync="value" transition="scale-transition" offset-y max-width="264">
+        <template v-slot:activator="{ on, attrs }">
+            <v-text-field height="30px" outlined dense :label="label" v-model="computeDateText" readonly v-bind="attrs" v-on="on" hide-details class="pt-0 pb-1 searchForm" ></v-text-field>
+        </template>
+        <v-card>
+            <v-card-text>
+                <v-row>
+                    <v-btn fab x-small class="ml-1" color="white" elevation="0" @click="yearMonthChange('year', -1)">
+                        <v-icon>mdi-chevron-double-left</v-icon>
+                    </v-btn>
+                    <v-btn fab x-small class="ml-1" color="white" elevation="0" @click="yearMonthChange('month', -1)">
+                        <v-icon>mdi-chevron-left</v-icon>
+                    </v-btn>
+                    <v-select append-icon="" v-model="year" :items="years" :menu-props="{auto:true,contentClass: 'yearPickerMenu'}" class="px-1 searchForm datePickerSelector" hide-details outlined dense height="32" style="min-width: 55px;width: 60px;text-align: center;" @change="yearChange"></v-select>
+                    <v-select append-icon="" v-model="month" :items="$months" :menu-props="{auto:true,contentClass: 'monthPickerMenu'}" class="px-1 searchForm datePickerSelector" style="min-width: 35px;width: 40px;text-align: center;" hide-details outlined dense height="32" @change="monthChange"></v-select>
+                    <v-btn fab x-small class="mr-1" color="white" elevation="0" @click="yearMonthChange('month', 1)">
+                        <v-icon>mdi-chevron-right</v-icon>
+                    </v-btn>
+                    <v-btn fab x-small class="mr-1" color="white" elevation="0" @click="yearMonthChange('year', 1)">
+                        <v-icon>mdi-chevron-double-right</v-icon>
+                    </v-btn>
+                </v-row>
+                <v-row>
+                    <v-data-table dense :headers="$weekHeaders" :items="days" class="elevation-0 datePicker" hide-default-footer >
+                        <template v-slot:item.mon="{ item }">
+                            <v-btn v-if="item.mon" fab x-small :color="(item.mon.selected?'blue lighten-3':(item.mon.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'mon')">{{ !item.mon.value ? '' : item.mon.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.tue="{ item }">
+                            <v-btn v-if="item.tue" fab x-small :color="(item.tue.selected?'blue lighten-3':(item.tue.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'tue')">{{ !item.tue.value ? '' : item.tue.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.wed="{ item }">
+                            <v-btn v-if="item.wed" fab x-small :color="(item.wed.selected?'blue lighten-3':(item.wed.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'wed')">{{ !item.wed.value ? '' : item.wed.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.thu="{ item }">
+                            <v-btn v-if="item.thu" fab x-small :color="(item.thu.selected?'blue lighten-3':(item.thu.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'thu')">{{ !item.thu.value ? '' : item.thu.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.fri="{ item }">
+                            <v-btn v-if="item.fri" fab x-small :color="(item.fri.selected?'blue lighten-3':(item.fri.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'fri')">{{ !item.fri.value ? '' : item.fri.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.sat="{ item }">
+                            <v-btn v-if="item.sat" fab x-small :color="(item.sat.selected?'blue lighten-3':(item.sat.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'sat')">{{ !item.sat.value ? '' : item.sat.value }}</v-btn>
+                        </template>
+                        <template v-slot:item.sun="{ item }">
+                            <v-btn v-if="item.sun" fab x-small :color="(item.sun.selected?'blue lighten-3':(item.sun.current? 'blue lighten-5': 'white'))" elevation="0" @click="pickDate(item, 'sun')">{{ !item.sun.value ? '' : item.sun.value }}</v-btn>
+                        </template>
+                    </v-data-table>
+                </v-row>
+            </v-card-text>
+        </v-card>
+    </v-menu>
+</template>
+<script>
+    export default {
+        name:'s-date-picker',
+        props: {
+            label: String,
+            range: Boolean,
+            value: {
+                type: Array,
+                default: () => ([]),
+            }
+        },
+        data() {
+            return {
+                show : false,
+                year: null,
+                month:null,
+                days: [],
+                years: []
+            }
+        },
+        computed: {
+            computeDateText() {
+                if (this.value.length == 0) {
+                    return '';
+                }
+                if (this.value.length == 1) {
+                    return this.value[0];
+                }
+                if (this.value.length == 2) {
+                    return this.value.sort().join('  至  ');
+                }
+            }
+        },
+        methods: {
+            yearMonthChange(type, v) {
+                let yc = 0;
+                if (type == 'month') {
+                    let tmpMonth = this.month + v;
+                    if(tmpMonth <= 0 ) {
+                        this.month = 12;
+                        yc = -1;
+                    } else if (tmpMonth > 12 ) {
+                        this.month = 1;
+                        yc = 1;
+                    } else {
+                        this.month = tmpMonth;
+                        yc = 0;
+                    }
+                } else {
+                    yc = v;
+                }
+                if (yc != 0) {
+                    let tmpYear = this.year + v;
+                    if (tmpYear < 2000) {
+                        tmpYear = this.years[this.years.length];
+                    } else if (tmpYear > this.years[this.years.length]) {
+                        tmpYear = 2000;
+                    }
+                    this.year = tmpYear;
+                }
+                this.$calcMonthDates(this.days, this.year, this.month, new Date(), this.value.sort());
+            },
+            yearChange(year) {
+                this.$calcMonthDates(this.days,this.year, this.month, new Date(), this.value.sort());
+            },
+            monthChange(month) {
+                this.$calcMonthDates(this.days,this.year, this.month, new Date(), this.value.sort());
+            },
+            pickDate(item, type) {
+                console.info(this.range);
+                if (this.value.length > 0) {
+                    if(!this.range) {
+                        this.value.splice(0, 1);
+                    }
+                    if (this.range && this.value.length > 1) {
+                        this.value.splice(0, 2);
+                    }
+                }
+                let d = item[type].value;
+                let selectedDate = this.year + '-' + (this.month < 10 ? '0' : '') + this.month + '-' + (d < 10 ? '0' : '' ) + d;
+                this.$set(this.value, this.value.length, selectedDate);
+                // 重新初始化日期表格
+                this.$calcMonthDates(this.days, this.year, this.month, new Date(), this.value.sort());
+                if (!this.range && this.value.length > 0) {
+                    this.show = false;
+                }
+                if (this.range && this.value.length == 2) {
+                    this.show = false;
+                }
+            },
+        },
+        mounted() {
+            let date = new Date();
+            let d = date.getDate();
+            this.year = date.getFullYear();
+            this.month = date.getMonth() + 1;
+            this.years = this.$getYears(this.year);
+            this.$calcMonthDates(this.days, this.year, this.month, date, []);
+        }
+    }
+</script>

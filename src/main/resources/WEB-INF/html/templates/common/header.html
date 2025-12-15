@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="commonHeader(title)">
+    <title th:replace="${title}">Starmie Demo</title>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <link th:href="@{/static/images/starmie.ico}" href="/static/images/starmie.ico" rel="icon" type="image/x-icon"/>
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue2/vuetify.min.css}" href="/static/css/vue2/vuetify.min.css" rel="stylesheet" type="text/css" />
+</head>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <title>Starmie Demo</title>
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue3/vuetify.min.css}" href="/static/css/vue3/vuetify.min.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+        {"imports": {
+            "vue": "[[@{/static/js/vue2esm/vue.esm-browser.js}]]",
+            "vue-router" : "[[@{/static/js/vue2esm/vue-router.esm-browser.js}]]",
+            "axios" : "[[@{/static/js/vue2esm/axios.min.js}]]",
+            "buefy" : "[[@{/static/js/vue2esm/buefy.esm.js}]]",
+            "vue2-sfc-loader" : "[[@{/static/js/vue2esm/vue2-sfc-loader.esm.js}]]"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app>
+            </v-app-bar>
+            <v-navigation-drawer app> <!-- -->
+                <router-link to="/user">用户管理</router-link>
+                <router-link to="/menu">菜单管理</router-link>
+            </v-navigation-drawer>
+            <v-main>
+                <v-tabs fixed-tabs>
+                    <v-tab to="/user">用户管理</v-tab>
+                    <v-tab to="/menu">菜单管理</v-tab>
+                </v-tabs>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
+            </v-main>
+            <v-footer app>
+                <div class="pt-0"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+            </v-footer>
+        </v-app>
+    </div>
+    <script type="module">
+        import * as Vue from 'vue';
+        import * as Buefy from 'buefy';
+        import * as VueRouter from 'vue-router';
+        import { loadModule } from 'vue2-sfc-loader';
+        
+            const options = {
+                moduleCache: {
+                    vue: Vue,
+                    buefy : Buefy,
+                },
+                getFile(url) {
+                    return fetch(url).then(response => response.ok ? response.text() : Promise.reject(response));
+                },
+                addStyle(styleStr) {
+                    const style = document.createElement('style');
+                    style.textContent = styleStr;
+                    const ref = document.head.getElementsByTagName('style')[0] || null;
+                    document.head.insertBefore(style, ref);
+                },
+                log(type, ...args) {
+                    console.log(type, ...args);
+                }
+            }
+        
+        const routes = [
+            {path: '/user', component: defineAsyncComponent(() => loadModule('[[@{/user/toList.vue}]]'))},
+            {path: '/menu', component: defineAsyncComponent(() => loadModule('[[@{/navigation_menu/toList.vue}]]'))},
+        ]
+        //
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        })
+        //const vuetify = createVuetify({theme: {defaultTheme: 'light'}, });
+        //app.use(vuetify).use(router).mount('#app');
+    </script>
+</body>
+
+</html>

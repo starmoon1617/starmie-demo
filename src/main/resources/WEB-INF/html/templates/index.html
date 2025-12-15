@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Starmie Demo</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <link th:href="@{/static/images/starmie.ico}" href="/static/images/starmie.ico" rel="icon" type="image/x-icon"/>
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue2/vuetify.min.css}" href="/static/css/vue2/vuetify.min.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/common.css}" href="/static/css/common.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app >
+            <v-app-bar app absolute color="light-blue darken-2" flat outlined height="40" class="tbar px-1" clipped-left min-width="1200">
+                <v-row no-gutters dense >
+                    <v-col cols="6" sm="6" md="6">
+                        <v-img th:src="@{/static/images/StarmieDemo_1.png}" width="236" height="40" class="logo" ></v-img>
+                    </v-col>
+                    <v-col cols="6" sm="6" md="6" class="d-flex justify-end">
+                        <v-spacer></v-spacer>
+                        <v-avatar color="indigo" size="30" class="mt-1">
+                            <v-icon dark>mdi-account-circle</v-icon>
+                        </v-avatar>
+                        <v-btn text dense class="px-1 noTransform" color="white">
+                            [[${session.CURRENT_USER.employee != null ? session.CURRENT_USER.employee.showName : session.CURRENT_USER.loginName }]]
+                            <v-icon right dark >mdi-chevron-down</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-app-bar>
+            <v-navigation-drawer app permanent absolute style="max-height: calc(100% - 70px);" width="120" clipped color="light-blue darken-2"> <!-- -->
+                <v-list nav dense v-model:opened="open" class="px-0">
+                    <v-list-group class="navModule" v-for="navigation in navigations" :key="navigation.moduleName">
+                        <template v-slot:activator>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="navigation.moduleName"></v-list-item-title>
+                            </v-list-item-content>
+                        </template>
+                        <v-list-item class="navMenu" active-class="navSelected" style="padding-left: 20%;" v-for="menu in navigation.menus" :key="menu.menuName" :title="menu.menuName" :value="menu.menuName" :to="menu.menuNo" >
+                            <v-list-item-content>
+                                <v-list-item-title v-text="menu.menuName"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-group>
+                </v-list>
+            </v-navigation-drawer>
+            <v-main>
+                <v-container fluid class="mainContainer">
+                    <router-view class="routerMain"></router-view>
+                </v-container>
+            </v-main>
+            <v-footer app absolute style="height: 30px;align-items: center;justify-content: center;" outlined min-width="1200">
+                <div class="pt-0" style="font-size: 0.75rem;"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+            </v-footer>
+        </v-app>
+    </div>
+    <script th:src="@{/static/js/common/axios.min.js}" src="/static/js/common/axios.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/common/common.js}" src="/static/js/common/common.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue.js}" src="/static/js/vue2/vue.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vuetify.min.js}" src="/static/js/vue2/vuetify.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue-router.js}" src="/static/js/vue2/vue-router.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue2-sfc-loader.js}" src="/static/js/vue2/vue2-sfc-loader.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/common/starmie.js}" src="/static/js/common/starmie.js" type="text/javascript"></script>
+    <script>
+        const baseUrl = '[[${contextPath}]]';
+        Vue.use(Vuetify);
+        Vue.use(Starmie, {baseUrl : baseUrl});
+        const options = {
+            moduleCache: {
+                vue: Vue,
+                vuetify: Vuetify,
+            },
+            async getFile(url) {
+                const res = await fetch(url);
+                if (!res.ok)
+                    throw Object.assign(new Error(res.statusText + ' ' + url), {res});
+                return {
+                    getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text(),
+                }
+            },
+            addStyle(styleStr) {
+                const style = document.createElement('style');
+                style.textContent = styleStr;
+                const ref = document.head.getElementsByTagName('style')[0] || null;
+                document.head.insertBefore(style, ref);
+            },
+            log(type, ...args) {
+                console.log(type, ...args);
+            }
+        }
+        const {loadModule} = window['vue2-sfc-loader'];
+
+        const routes = [
+            // {path: '/user', component: Vue.defineAsyncComponent(() => loadModule('[[@{/user/toList.vue}]]', options))},
+            // {path: '/menu', component: Vue.defineAsyncComponent(() => loadModule('[[@{/navigation_menu/toList.vue}]]', options))},
+        ]
+        //
+        const router = new VueRouter({
+            routes
+        })
+        const vuetify = new Vuetify({theme: {defaultTheme: 'light'}, breakpoint: {thresholds: {xs: 1200,sm: 1920, md:2560, lg:3640},scrollBarWidth: 20,smAndUp:true}});
+        
+        // load custom component
+        Vue.component('s-num-field', () => loadModule(baseUrl + '/components/SNumField.vue', options));
+        Vue.component('t-num-field', () => loadModule(baseUrl + '/components/TNumField.vue', options));
+        Vue.component('s-date-range-picker', () => loadModule(baseUrl + '/components/SDateRangePicker.vue', options));
+        Vue.component('s-date-picker', () => loadModule(baseUrl + '/components/SDatePicker.vue', options));
+        Vue.component('s-svg', () => loadModule(baseUrl + '/components/SSvg.vue', options));
+        
+        const app = new Vue({
+            el: '#app',
+            vuetify: vuetify,
+            data() {
+                return {
+                    open:false,
+                    navigations : []
+                }
+            },
+            router,
+            mounted() {
+                let _this = this;
+                Common.loadMenus(baseUrl + '/', function(response) {
+                    // 添加路由 
+                    response.data.data.forEach(m => {
+                        m.menus.forEach(n => {
+                            router.addRoute({ path: n.menuNo, component: Vue.defineAsyncComponent(() => loadModule(n.uri, options))});
+                        });
+                    });
+                    _this.navigations = response.data.data;
+                }, function(e){
+                    console.error(e);
+                });
+            },
+        });
+    </script>
+</body>
+
+</html>

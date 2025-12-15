@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Starmie Demo</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+    <link th:href="@{/static/@mdi/font/css/materialdesignicons.css}" href="/static/@mdi/font/css/materialdesignicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/vue2/vuetify.min.css}" href="/static/css/vue2/vuetify.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app elevation="5" flat outlined style="height: 60px;" clipped-left>
+                <h1>Starmie Demo</h1>
+            </v-app-bar>
+            <v-navigation-drawer app style="max-height: calc(100% - 90px);min-width: 120px; max-width: 200px;" clipped floating> <!-- -->
+                <v-list nav dense v-model:opened="open">
+                    <v-list-group v-for="navigation in navigations" :key="navigation.moduleName">
+                        <template v-slot:activator>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="navigation.moduleName"></v-list-item-title>
+                            </v-list-item-content>
+                        </template>
+                        <v-list-item style="padding-left: 20%;" v-for="menu in navigation.menus" :key="menu.menuName" :title="menu.menuName" :value="menu.menuName" :to="menu.menuNo" >
+                            <v-list-item-content>
+                                <v-list-item-title v-text="menu.menuName"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-group>
+                </v-list>
+                <!--
+                <router-link to="/user">用户管理</router-link>
+                <router-link to="/menu">菜单管理</router-link>
+                -->
+            </v-navigation-drawer>
+            <router-view></router-view>
+            <v-footer app style="height: 30px;align-items: center;justify-content: center;" outlined>
+                <div class="pt-0"> Copyright (c) 2023, Starmoon1617 and/or Nathan Liao. All rights reserved. </div>
+            </v-footer>
+        </v-app>
+    </div>
+    <script th:src="@{/static/js/common/axios.min.js}" src="/static/js/common/axios.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/common/common.js}" src="/static/js/common/common.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue.js}" src="/static/js/vue2/vue.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vuetify.min.js}" src="/static/js/vue2/vuetify.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue-router.js}" src="/static/js/vue2/vue-router.min.js" type="text/javascript"></script>
+    <script th:src="@{/static/js/vue2/vue2-sfc-loader.js}" src="/static/js/vue2/vue2-sfc-loader.js" type="text/javascript"></script>
+    <script>
+        Vue.use(Vuetify);
+        const options = {
+            moduleCache: {
+                vue: Vue,
+                vuetify: Vuetify,
+            },
+            async getFile(url) {
+                const res = await fetch(url);
+                if (!res.ok)
+                    throw Object.assign(new Error(res.statusText + ' ' + url), {res});
+                return {
+                    getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text(),
+                }
+            },
+            addStyle(styleStr) {
+                const style = document.createElement('style');
+                style.textContent = styleStr;
+                const ref = document.head.getElementsByTagName('style')[0] || null;
+                document.head.insertBefore(style, ref);
+            },
+            log(type, ...args) {
+                console.log(type, ...args);
+            }
+        }
+        const {loadModule} = window['vue2-sfc-loader'];
+
+        const routes = [
+            // {path: '/user', component: Vue.defineAsyncComponent(() => loadModule('[[@{/user/toList.vue}]]', options))},
+            // {path: '/menu', component: Vue.defineAsyncComponent(() => loadModule('[[@{/navigation_menu/toList.vue}]]', options))},
+        ]
+        //
+        const router = new VueRouter({
+            routes
+        })
+        const vuetify = new Vuetify({theme: {defaultTheme: 'light'}, });
+        const app = new Vue({
+            el: '#app',
+            vuetify: vuetify,
+            data() {
+                return {
+                    open:false,
+                    navigations : []
+                }
+            },
+            router,
+            mounted() {
+                let _this = this;
+                Common.initNavigations('[[@{/}]]', function(response) {
+                    // 添加路由 
+                    response.data.data.forEach(m => {
+                        m.menus.forEach(n => {
+                            console.info("addRoute ==> " + n.menuNo + ", uri ==>" + n.uri);
+                            router.addRoute({ path: n.menuNo, component: Vue.defineAsyncComponent(() => loadModule(n.uri, options))});
+                        });
+                    });
+                    _this.navigations = response.data.data;
+                }, function(e){
+                    console.error(e);
+                });
+            },
+        });
+    </script>
+</body>
+
+</html>

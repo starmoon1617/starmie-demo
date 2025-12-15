@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head th:replace="~{common/header :: commonHeader(~{::title}) }">
+    <title>User Management</title>
+</head>
+
+<body th:replace="~{ common/body :: commonBody(~{::v-main}, ~{::script})}">
+    <v-main style="width: 100%;">
+        <div th:replace="~{user/searchForm :: searchForm}"></div>
+        <div th:replace="~{common/toolbar :: commonToolbar}"></div>
+        <v-layout>
+            <v-container fluid>
+                <v-data-table dense :headers="tableDatas.headers" :items="tableDatas.dataItems"
+                    :server-items-length="tableDatas.total" class="elevation-1" :footer-props="footOptions"
+                    :options.sync="pagination">
+                    <template v-slot:top>
+                        <v-toolbar flat color="white" height="1px">
+                            <div th:replace="~{user/editForm :: editForm}"></div>
+                            <div th:replace="~{common/dialogs :: dialogDelete}"></div>
+                            <div th:replace="~{common/dialogs :: dialogConfirm}"></div>
+                            <div th:replace="~{common/dialogs :: dialogImport}"></div>
+                        </v-toolbar>
+                    </template>
+                    <div th:replace="~{common/toolbar :: actionBar}"></div>
+                </v-data-table>
+            </v-container>
+        </v-layout>
+    </v-main>
+    <script defer th:src="@{/script/user/user.js}" src="/script/user/user.js" type="text/javascript"></script>
+</body>
+
+</html>
